@@ -63,6 +63,14 @@ export default defineConfig({
       },
       {
         extends: true,
+        test: {
+          name: "webmcp",
+          environment: "jsdom",
+          include: ["src/client/**/*.test.ts"],
+        },
+      },
+      {
+        extends: true,
         plugins: [
           cloudflareTest({
             main: "./src/registry-handler.ts",

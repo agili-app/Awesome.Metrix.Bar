@@ -7,6 +7,7 @@ import { INDEX_PATH, PAGE_CACHE } from "../src/registry.ts";
 import type { Manifest } from "../src/registry.ts";
 import { get, verifyAsset, verifyCache } from "./http.ts";
 import { verifyPages } from "./verify-pages.ts";
+import { verifyAgents } from "./verify-agents.ts";
 import { validateSources } from "./config.ts";
 import { download } from "./download.ts";
 import { sha256, validateRegistry } from "./registry.ts";
@@ -62,6 +63,7 @@ for (const entry of registry.dashboards) {
 for (const [path, asset] of Object.entries(expected.assets))
   await verifyAsset(new URL(path, origin), asset, edgeCache);
 await verifyPages(expected, origin, edgeCache, args.includes("--dev"));
+await verifyAgents(expected, origin, edgeCache);
 const post = await get(indexURL, { method: "POST" });
 assert.equal(post.status, 405, "Unsupported registry methods must return 405");
 assert.equal(post.headers.get("Cache-Control"), "no-store", "Method errors must not be cached");
@@ -77,5 +79,5 @@ assert.equal(missing.status, 404, "Unknown files must return 404");
 assert.equal(missing.headers.get("Cache-Control"), "no-store", "Unknown files must not be cached");
 if (edgeCache) await verifyCache(indexURL, sha256(indexBytes));
 console.log(
-  `Verified ${(registry.dashboards.length + 1) * locales.length} pages in ${locales.length} languages, SEO metadata, author avatars, ${registry.dashboards.length} dashboards and ${Object.keys(expected.assets).length} resources at ${indexURL.href}`,
+  `Verified ${(registry.dashboards.length + 1) * locales.length} pages in ${locales.length} languages, SEO and agent discovery, Markdown negotiation, author avatars, ${registry.dashboards.length} dashboards and ${Object.keys(expected.assets).length} resources at ${indexURL.href}`,
 );

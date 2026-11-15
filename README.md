@@ -35,6 +35,12 @@ Then open a dashboard's page, follow its setup notes, and choose **Install**. Yo
 
 Each dashboard page lists its author, version, license, and setup notes. Catalog order uses each repository’s GitHub stars divided by its number of listed dashboards. Badges show total stars and link to the repository.
 
+## Use with agents
+
+Agents can browse the catalog through [llms.txt](https://awesome.metrix.bar/llms.txt), [complete setup notes](https://awesome.metrix.bar/llms-full.txt), an [Agent Skill](https://awesome.metrix.bar/.well-known/agent-skills/index.json), and the [API catalog](https://awesome.metrix.bar/.well-known/api-catalog). Send `Accept: text/markdown` to a catalog or dashboard page for Markdown in its selected language.
+
+In browsers supporting WebMCP, UI SDK exposes `snapshot`, `query`, and `act` for **Add registry**, **Install**, and **Download**. Installation opens Metrix.Bar, where you confirm permissions and updates.
+
 ## Contribute
 
 Open an issue with the dashboard's upstream URL, or send a pull request that updates [registry/sources.json](registry/sources.json). Keep upstream authors, licenses, original bytes, and release history intact; the requirements are in [AGENTS.md](AGENTS.md). Keep both READMEs in sync.

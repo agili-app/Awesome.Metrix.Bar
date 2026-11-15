@@ -1,4 +1,4 @@
-import { Button } from "@ui-sdk/react/button";
+import { ActionLink } from "./action-link.tsx";
 import { css } from "../../styled-system/css";
 import { button } from "../../styled-system/recipes";
 import { dashboardLinks } from "../catalog.ts";
@@ -93,15 +93,12 @@ export function DashboardDetail({
           <h2 id="install" className={css({ textStyle: "heading" })}>
             {m.install_heading({}, { locale })}
           </h2>
-          <Button className={button()} render={<a href={links.install} />}>
+          <ActionLink className={button()} href={links.install}>
             {m.install_in_app({}, { locale })}
-          </Button>
-          <Button
-            className={button({ visual: "outline" })}
-            render={<a href={links.download} download />}
-          >
+          </ActionLink>
+          <ActionLink className={button({ visual: "outline" })} href={links.download} download>
             {m.download_bar({}, { locale })}
-          </Button>
+          </ActionLink>
           <small className={css({ color: "fg.muted", fontSize: "xs" })}>
             {m.install_requirement({}, { locale })}
           </small>

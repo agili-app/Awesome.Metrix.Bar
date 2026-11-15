@@ -35,6 +35,12 @@ https://awesome.metrix.bar/dashboards/index.json
 
 每个看板页面还列出作者、版本、许可证和配置说明。目录按仓库 Star 数除以本站收录的看板数降序排列。徽章显示 Star 总数，并链接到仓库。
 
+## 通过 Agent 使用
+
+Agent 可以通过 [llms.txt](https://awesome.metrix.bar/llms.txt)、[完整配置说明](https://awesome.metrix.bar/llms-full.txt)、[Agent Skill](https://awesome.metrix.bar/.well-known/agent-skills/index.json) 和 [API 目录](https://awesome.metrix.bar/.well-known/api-catalog) 浏览看板。向目录或看板页面发送 `Accept: text/markdown`，即可获得对应语言的 Markdown 内容。
+
+在支持 WebMCP 的浏览器中，UI SDK 提供 `snapshot`、`query` 和 `act`，用于 **Add registry**、**Install** 和 **Download**。安装链接会打开 Metrix.Bar，所需权限和更新仍由你在应用中确认。
+
 ## 贡献
 
 可以在 Issue 中提供看板的上游地址，或提交修改 [registry/sources.json](registry/sources.json) 的 Pull Request。请保留上游作者、许可证、原始字节和发布历史，具体要求见 [AGENTS.md](AGENTS.md)。修改文档时同步更新两份 README。

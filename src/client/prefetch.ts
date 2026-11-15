@@ -1,6 +1,12 @@
 import { ForesightManager } from "js.foresight";
 import { createPrefetcher } from "../prefetch.ts";
 
+const modelContext = (document as Document & { modelContext?: { registerTool?: unknown } })
+  .modelContext;
+if (typeof modelContext?.registerTool === "function") {
+  void import("./webmcp.ts").then(({ enableWebMCP }) => enableWebMCP());
+}
+
 const prefetch = createPrefetcher(location.href, (url) => {
   if (HTMLScriptElement.supports?.("speculationrules")) {
     const rules = document.createElement("script");

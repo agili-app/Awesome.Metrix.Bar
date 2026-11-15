@@ -1,4 +1,4 @@
-import { Button } from "@ui-sdk/react/button";
+import { ActionLink } from "./action-link.tsx";
 import { css, cx } from "../../styled-system/css";
 import { button } from "../../styled-system/recipes";
 import { dashboardLinks } from "../catalog.ts";
@@ -137,13 +137,13 @@ export function DashboardCard({
             GitHub <span aria-hidden="true">↗</span>
           </a>
         )}
-        <Button
+        <ActionLink
           className={cx(button({ visual: "outline" }), css({ ml: "auto" }))}
-          render={<a href={links.install} />}
+          href={links.install}
           aria-label={m.install_named({ name: dashboard.name }, { locale })}
         >
           {m.install({}, { locale })}
-        </Button>
+        </ActionLink>
       </footer>
     </article>
   );

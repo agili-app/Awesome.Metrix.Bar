@@ -8,6 +8,7 @@ export const GET = defineHandler(
     new Response(
       `User-agent: *
 Allow: /
+Content-Signal: search=yes, ai-input=yes
 Sitemap: ${siteURL(manifest, "/sitemap.xml")}
 `,
       {

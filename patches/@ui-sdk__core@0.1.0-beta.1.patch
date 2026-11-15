@@ -1,0 +1,13 @@
+diff --git a/dist/page/agent/agent.js b/dist/page/agent/agent.js
+index 1ecff8c76929cef63cb8ddc214734c8ece3a06db..6eb867a6225b3750ef25c93c3295843b1e1c0fb9 100644
+--- a/dist/page/agent/agent.js
++++ b/dist/page/agent/agent.js
+@@ -172,7 +172,7 @@ function buttonsOf(parts) {
+ var rootOf = (parts) => parts.find((part) => part.slot === "root" && !part.key)?.el;
+ function ownButton(parts) {
+   const root = rootOf(parts);
+-  if (root && (root.tagName === "BUTTON" || root.getAttribute("role") === "button")) {
++  if (root && root.matches("button, a[href], [role=button]")) {
+     return root;
+   }
+ }

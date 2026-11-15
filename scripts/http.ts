@@ -7,8 +7,8 @@ export function get(url: URL, init?: RequestInit): Promise<Response> {
   return fetch(url, { ...init, redirect: "error", signal: AbortSignal.timeout(30_000) });
 }
 
-export async function verifyCache(url: URL, hash: string): Promise<void> {
-  const response = await get(url);
+export async function verifyCache(url: URL, hash: string, init?: RequestInit): Promise<void> {
+  const response = await get(url, init);
   assert.equal(response.status, 200, `${url.pathname}: cached request failed`);
   assert.equal(
     response.headers.get("Cf-Cache-Status"),

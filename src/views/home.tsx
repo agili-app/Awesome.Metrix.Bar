@@ -1,4 +1,4 @@
-import { Button } from "@ui-sdk/react/button";
+import { ActionLink } from "./action-link.tsx";
 import { Field, FieldLabel } from "@ui-sdk/react/field";
 import { Input } from "@ui-sdk/react/input";
 import { css } from "../../styled-system/css";
@@ -60,9 +60,9 @@ export function Home({ manifest, locale = baseLocale }: { manifest: Manifest; lo
           <p className={css({ color: "fg.muted", fontSize: "sm" })}>
             {m.registry_description({}, { locale })}
           </p>
-          <Button className={button()} render={<a href={registryLink(manifest.registryURL)} />}>
+          <ActionLink className={button()} href={registryLink(manifest.registryURL)}>
             {m.add_registry({}, { locale })}
-          </Button>
+          </ActionLink>
           <Field
             name="registry-url"
             className={css({ display: "grid", gap: "2", mt: "2", minWidth: "0" })}
