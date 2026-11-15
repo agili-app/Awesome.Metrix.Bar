@@ -20,3 +20,5 @@ minimumReleaseAgeExclude:
   - "@void/react@1.7.0"
   - "@ui-sdk/core@0.1.0-beta.1"
   - "@ui-sdk/react@0.1.0-beta.1"
+patchedDependencies:
+  js.foresight@4.2.1: patches/js.foresight@4.2.1.patch

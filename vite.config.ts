@@ -1,3 +1,4 @@
+import { fileURLToPath } from "node:url";
 import { voidPlugin } from "void";
 import { voidReact } from "@void/react/plugin";
 import { cloudflareTest } from "@cloudflare/vitest-plugin";
@@ -11,6 +12,15 @@ export default defineConfig({
     ? []
     : [pandacss(), paraglideVitePlugin({ project: "./project.inlang" }), voidPlugin(), voidReact()],
   environments: {
+    client: {
+      build: {
+        rollupOptions: {
+          input: {
+            prefetch: fileURLToPath(new URL("./src/client/prefetch.ts", import.meta.url).href),
+          },
+        },
+      },
+    },
     void_worker: {
       build: { sourcemap: true },
       optimizeDeps: {

@@ -54,7 +54,9 @@ export function DashboardCard({
                 "& a": { textDecoration: "none", _hover: { textDecoration: "underline" } },
               })}
             >
-              <a href={dashboardPath(dashboard.id, locale)}>{dashboard.name}</a>
+              <a href={dashboardPath(dashboard.id, locale)} data-prefetch>
+                {dashboard.name}
+              </a>
             </h3>
             <p
               className={css({
@@ -121,6 +123,7 @@ export function DashboardCard({
       >
         <a
           href={dashboardPath(dashboard.id, locale)}
+          data-prefetch
           aria-label={m.view_details({ name: dashboard.name }, { locale })}
         >
           {m.details({}, { locale })} <span aria-hidden="true">→</span>

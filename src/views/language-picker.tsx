@@ -35,6 +35,7 @@ export function LanguagePicker({ locale, path }: { locale: Locale; path: string 
             <li key={language}>
               <a
                 href={localePath(path, language)}
+                data-prefetch
                 hrefLang={language}
                 lang={language}
                 aria-current={language === locale ? "page" : undefined}

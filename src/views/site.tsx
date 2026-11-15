@@ -65,6 +65,7 @@ export function Site({
               textDecoration: "none",
             })}
             href={localePath("/", locale)}
+            data-prefetch
           >
             <span
               aria-hidden="true"
@@ -101,7 +102,9 @@ export function Site({
             })}
           >
             <li>
-              <a href={`${localePath("/", locale)}#dashboards`}>{m.dashboards({}, { locale })}</a>
+              <a href={`${localePath("/", locale)}#dashboards`} data-prefetch>
+                {m.dashboards({}, { locale })}
+              </a>
             </li>
             <li>
               <a href="https://metrix.bar/">

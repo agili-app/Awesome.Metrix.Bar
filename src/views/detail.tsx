@@ -35,7 +35,9 @@ export function DashboardDetail({
           })}
         >
           <li>
-            <a href={localePath("/", locale)}>{m.dashboards({}, { locale })}</a>
+            <a href={localePath("/", locale)} data-prefetch>
+              {m.dashboards({}, { locale })}
+            </a>
           </li>
           <li aria-current="page">{dashboard.name}</li>
         </ol>
@@ -158,7 +160,9 @@ export function DashboardDetail({
         <DashboardInfo dashboard={dashboard} homepage={links.homepage} locale={locale} />
       </div>
       <p className={css({ mt: "10", fontSize: "sm", fontWeight: "semibold" })}>
-        <a href={`${localePath("/", locale)}#dashboards`}>← {m.browse_all({}, { locale })}</a>
+        <a href={`${localePath("/", locale)}#dashboards`} data-prefetch>
+          ← {m.browse_all({}, { locale })}
+        </a>
       </p>
     </Site>
   );

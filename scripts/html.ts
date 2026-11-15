@@ -5,6 +5,12 @@ import type { HeadDescriptor } from "void";
 import { installLink } from "../src/metrix.ts";
 import type { Dashboard } from "../src/registry.ts";
 
+export function isPrefetchScript(src: string, development = false): boolean {
+  return development
+    ? src === "/src/client/prefetch.ts"
+    : /^\/assets\/prefetch-[A-Za-z0-9_-]+\.js$/.test(src);
+}
+
 export function parsePage(
   html: string,
   head: HeadDescriptor,
@@ -54,8 +60,12 @@ export function parsePage(
       type === "module" &&
       (script.attr("src") === "/@vite/client" ||
         script.text().trim().startsWith('import RefreshRuntime from "/@react-refresh"'));
+    const prefetch =
+      type === "module" &&
+      !script.text().trim() &&
+      isPrefetchScript(script.attr("src") ?? "", development);
     assert(
-      type === "application/ld+json" || type === "application/json" || devTool,
+      type === "application/ld+json" || type === "application/json" || devTool || prefetch,
       `${url}: unexpected browser JavaScript`,
     );
   }
