@@ -194,6 +194,11 @@
           "commit": "25bc340298cb7a91b900856adca270e437869e0f",
           "version": "1.0.0",
           "sha256": "54696bec130e46afdade9f7bcecb6ba3d1a61dbc6c014890c1aadf356c0bbf82"
+        },
+        {
+          "commit": "b6187119fe614400a34da804b4b972e952f18989",
+          "version": "1.2.0",
+          "sha256": "1dc7863e7aa9091ad23f2ffc218b0bc449ac833092b11d47c986d1ea99ab9aac"
         }
       ]
     },
