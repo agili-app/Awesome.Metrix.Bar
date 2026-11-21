@@ -32,6 +32,7 @@ https://awesome.metrix.bar/dashboards/index.json
 | [`stevefans`](https://awesome.metrix.bar/dashboards/stevefans)             | X 粉丝数                |
 | [`magpie`](https://awesome.metrix.bar/dashboards/magpie)                   | Agent 模型与额度        |
 | [`nezha`](https://awesome.metrix.bar/dashboards/nezha)                     | 哪吒 V2 监控            |
+| [`antigravity`](https://awesome.metrix.bar/dashboards/antigravity)         | Antigravity CLI 账号    |
 
 每个看板页面还列出作者、版本、许可证和配置说明。目录按仓库 Star 数除以本站收录的看板数降序排列。徽章显示 Star 总数，并链接到仓库。
 
