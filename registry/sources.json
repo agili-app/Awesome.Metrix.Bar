@@ -220,6 +220,20 @@
           "sha256": "74770a47e3a15e1edcdad6813cacbb63d3b7d668d244d70dc81f621b5f501126"
         }
       ]
+    },
+    {
+      "id": "antigravity",
+      "repository": "catoncat/agy-acc",
+      "path": "dashboards/antigravity.bar",
+      "author": "catoncat",
+      "license": "MIT",
+      "releases": [
+        {
+          "commit": "8c62ea1987c840207b84eb7188f75d7bd87c4be9",
+          "version": "1.0.0",
+          "sha256": "746ee0fe662c847ba1dd163ba1e6c4e8b4c4ef763fa60dd093b3b0b4809506ca"
+        }
+      ]
     }
   ]
 }

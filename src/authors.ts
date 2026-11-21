@@ -6,6 +6,7 @@ export const authors = [
   "zxfccmm4",
   "thedavidweng",
   "bluenight91",
+  "catoncat",
 ].map((name) => ({
   name,
   file: `${name}.webp`,
