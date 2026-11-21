@@ -234,6 +234,20 @@
           "sha256": "746ee0fe662c847ba1dd163ba1e6c4e8b4c4ef763fa60dd093b3b0b4809506ca"
         }
       ]
+    },
+    {
+      "id": "trmnl-bar",
+      "repository": "miantiao-me/TRMNL.Bar",
+      "path": "dist/TRMNL.bar",
+      "author": "miantiao-me",
+      "license": "Apache-2.0",
+      "releases": [
+        {
+          "commit": "f73cf1d36400c82722a4bc1ac31f2c5ee4479e09",
+          "version": "0.2.0",
+          "sha256": "7a1cee893082e708a148a3ae228c2213d32669f1272c40a361fa1f5de6faebee"
+        }
+      ]
     }
   ]
 }
