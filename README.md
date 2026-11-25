@@ -35,6 +35,7 @@ Then open a dashboard's page, follow its setup notes, and choose **Install**. Yo
 | [`antigravity`](https://awesome.metrix.bar/dashboards/antigravity)         | Antigravity CLI accounts          |
 | [`trmnl-bar`](https://awesome.metrix.bar/dashboards/trmnl-bar)             | TRMNL screens and devices         |
 | [`agy-resets`](https://awesome.metrix.bar/dashboards/agy-resets)           | Antigravity quota resets          |
+| [`beszel`](https://awesome.metrix.bar/dashboards/beszel)                   | Beszel server monitoring          |
 
 Each dashboard page lists its author, version, license, and setup notes. Catalog order uses each repository’s GitHub stars divided by its number of listed dashboards. Badges show total stars and link to the repository.
 
