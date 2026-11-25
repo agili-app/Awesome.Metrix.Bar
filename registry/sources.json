@@ -297,6 +297,20 @@
           "sha256": "ac85b3007f28538b6446240ae9d3f25d056e1ca23e268d8b68696245c388913f"
         }
       ]
+    },
+    {
+      "id": "tempmail",
+      "repository": "miantiao-me/tempmail.bar",
+      "path": "dist/tempmail.bar",
+      "author": "miantiao-me",
+      "license": "Apache-2.0",
+      "releases": [
+        {
+          "commit": "5afdf0728ca8545e24d68174253a12ce0deb34bd",
+          "version": "0.1.0",
+          "sha256": "0be15f1e67f6e900f948838b0266ae70dfd4bbd9d99afc12f1f9ac445e0cc629"
+        }
+      ]
     }
   ]
 }
