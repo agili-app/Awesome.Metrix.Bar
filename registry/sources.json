@@ -297,6 +297,20 @@
           "sha256": "ac85b3007f28538b6446240ae9d3f25d056e1ca23e268d8b68696245c388913f"
         }
       ]
+    },
+    {
+      "id": "beszel",
+      "repository": "miantiao-me/beszel.bar",
+      "path": "dist/beszel.bar",
+      "author": "miantiao-me",
+      "license": "Apache-2.0",
+      "releases": [
+        {
+          "commit": "c3ac1102262bc3c074ca6f19fcb99f47075577fc",
+          "version": "0.2.0",
+          "sha256": "ac3c703f605f00169f32f6b25f6d97032a7d553df28101971945f26248d902da"
+        }
+      ]
     }
   ]
 }
