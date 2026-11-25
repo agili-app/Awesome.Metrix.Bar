@@ -283,6 +283,20 @@
           "sha256": "7a1cee893082e708a148a3ae228c2213d32669f1272c40a361fa1f5de6faebee"
         }
       ]
+    },
+    {
+      "id": "agy-resets",
+      "repository": "0tt0/agyresets-bar",
+      "path": "agy-resets.bar",
+      "author": "0tt0",
+      "license": "Apache-2.0",
+      "releases": [
+        {
+          "commit": "437404ca3303a06ae8e4705c52614a6090348b49",
+          "version": "0.3.1",
+          "sha256": "ac85b3007f28538b6446240ae9d3f25d056e1ca23e268d8b68696245c388913f"
+        }
+      ]
     }
   ]
 }

@@ -34,6 +34,7 @@ https://awesome.metrix.bar/dashboards/index.json
 | [`nezha`](https://awesome.metrix.bar/dashboards/nezha)                     | 哪吒 V2 监控            |
 | [`antigravity`](https://awesome.metrix.bar/dashboards/antigravity)         | Antigravity CLI 账号    |
 | [`trmnl-bar`](https://awesome.metrix.bar/dashboards/trmnl-bar)             | TRMNL 屏幕与镜像设备    |
+| [`agy-resets`](https://awesome.metrix.bar/dashboards/agy-resets)           | Antigravity 额度重置    |
 
 每个看板页面还列出作者、版本、许可证和配置说明。目录按仓库 Star 数除以本站收录的看板数降序排列。徽章显示 Star 总数，并链接到仓库。
 
