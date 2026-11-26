@@ -56,8 +56,7 @@ describe.each([
 
   it("checks each shared resource once", async () => {
     const { verify, fetch } = withAssets();
-    await verify("/", head);
-    await verify("/", head);
+    await Promise.all([verify("/", head), verify("/", head)]);
     expect(
       fetch.mock.calls.filter(([input]) => input instanceof URL && input.pathname === path),
     ).toHaveLength(1);

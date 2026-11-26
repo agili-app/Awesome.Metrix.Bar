@@ -4,7 +4,7 @@ import { avatarPath } from "../src/authors.ts";
 import { dashboardPath, locales, localePath } from "../src/i18n.ts";
 import type { Manifest } from "../src/registry.ts";
 import { siteURL } from "../src/seo.ts";
-import { get, verifyCache } from "./http.ts";
+import { get, runConcurrently, verifyCache } from "./http.ts";
 import { verifyCatalog } from "./verify-catalog.ts";
 import { createPageVerifier } from "./verify-page.ts";
 import { sha256 } from "./registry.ts";
@@ -63,11 +63,14 @@ export async function verifyPages(
     (await robots.text()).includes(`Sitemap: ${siteURL(manifest, "/sitemap.xml")}`),
     "Missing sitemap declaration",
   );
-  for (const author of new Set(
-    manifest.registry.dashboards.map(({ author }) => author).filter((name) => name !== undefined),
-  )) {
+  const authors = [
+    ...new Set(
+      manifest.registry.dashboards.map(({ author }) => author).filter((name) => name !== undefined),
+    ),
+  ];
+  await runConcurrently(authors, 6, async (author) => {
     const path = avatarPath(author);
-    if (!path) continue;
+    if (!path) return;
     const url = new URL(path, origin);
     const response = await get(url);
     assert.equal(response.status, 200, `${author}: avatar unavailable`);
@@ -75,29 +78,35 @@ export async function verifyPages(
     const bytes = Buffer.from(await response.arrayBuffer());
     assert(bytes.byteLength, `${author}: empty avatar`);
     if (edgeCache) await verifyCache(url, sha256(bytes));
-  }
-  for (const path of [
-    "/dashboards/unknown-dashboard",
-    "/avatars/unknown",
-    "/assets/missing.css",
-    "/unknown-page",
-    "/it",
-    "/en",
-    "/zh-CN/dashboards/unknown-dashboard",
-    "/zh-CN/dashboards/index.json",
-  ]) {
-    const response = await get(new URL(path, origin));
-    assert.equal(response.status, 404, `${path}: unknown route must be 404`);
-    assert.equal(
-      response.headers.get("Cache-Control"),
-      "no-store",
-      `${path}: errors must not be cached`,
-    );
-    assert.equal(response.headers.get("X-Robots-Tag"), "noindex");
-  }
-  for (const path of ["/", dashboardPath(manifest.registry.dashboards[0]!.id), "/zh-CN"]) {
-    const response = await get(new URL(path, origin), { method: "POST" });
-    assert(response.status >= 400, `${path}: unsupported method succeeded`);
-    assert.equal(response.headers.get("Cache-Control"), "no-store");
-  }
+  });
+  await runConcurrently(
+    [
+      "/dashboards/unknown-dashboard",
+      "/avatars/unknown",
+      "/assets/missing.css",
+      "/unknown-page",
+      "/it",
+      "/en",
+      "/zh-CN/dashboards/unknown-dashboard",
+      "/zh-CN/dashboards/index.json",
+    ],
+    6,
+    async (path) => {
+      const response = await get(new URL(path, origin));
+      assert.equal(response.status, 404, `${path}: unknown route must be 404`);
+      assert.equal(
+        response.headers.get("Cache-Control"),
+        "no-store",
+        `${path}: errors must not be cached`,
+      );
+      assert.equal(response.headers.get("X-Robots-Tag"), "noindex");
+    },
+  );
+  await Promise.all(
+    ["/", dashboardPath(manifest.registry.dashboards[0]!.id), "/zh-CN"].map(async (path) => {
+      const response = await get(new URL(path, origin), { method: "POST" });
+      assert(response.status >= 400, `${path}: unsupported method succeeded`);
+      assert.equal(response.headers.get("Cache-Control"), "no-store");
+    }),
+  );
 }
