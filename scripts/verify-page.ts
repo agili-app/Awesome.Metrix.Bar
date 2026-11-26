@@ -1,9 +1,7 @@
 import assert from "node:assert/strict";
 import type { Manifest as ViteManifest } from "vite-plus";
 import type { HeadDescriptor } from "void";
-import type { Manifest } from "../src/registry.ts";
-import { PAGE_CACHE } from "../src/registry.ts";
-import { siteURL } from "../src/seo.ts";
+import { PAGE_CACHE, siteURL, type Manifest } from "../src/registry.ts";
 import { get, verifyCache } from "./http.ts";
 import { isPrefetchScript, parsePage } from "./html.ts";
 import { sha256 } from "./registry.ts";

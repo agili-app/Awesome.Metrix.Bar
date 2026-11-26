@@ -1,15 +1,25 @@
 import { sortedDashboards } from "../catalog.ts";
+import { sha256Hex } from "../crypto.ts";
 import { locales } from "../i18n.ts";
 import { registryLink } from "../metrix.ts";
-import type { Manifest } from "../registry.ts";
-import { siteURL } from "../seo.ts";
-import { catalogMarkdown, dashboardMarkdown, dashboardList, escapeMarkdown } from "./markdown.ts";
+import { siteURL, type Manifest } from "../registry.ts";
+import { catalogMarkdown, dashboardList, dashboardMarkdown, escapeMarkdown } from "./markdown.ts";
 
 export const SKILL_PATH = "/.well-known/agent-skills/metrix-dashboards/SKILL.md";
+
+const SITE_DESCRIPTION =
+  "Community dashboards for Metrix.Bar on macOS, Windows, and Linux (experimental).";
 
 export interface AgentDocument {
   body: string;
   contentType: string;
+}
+
+function jsonDocument(value: unknown, contentType = "application/json"): AgentDocument {
+  return {
+    body: `${JSON.stringify(value, null, 2)}\n`,
+    contentType: `${contentType}; charset=utf-8`,
+  };
 }
 
 export async function agentDocuments(manifest: Manifest): Promise<Record<string, AgentDocument>> {
@@ -30,20 +40,11 @@ In WebMCP-capable browsers, UI SDK exposes \`snapshot\`, \`query\`, and \`act\` 
 
 The site supports ${locales.join(", ")}. English paths are unprefixed; other pages use /<locale> and /<locale>/dashboards/<id>. Registry and download URLs are unprefixed. Dashboard descriptions and setup notes retain their original language.
 `;
-  const digest = Array.from(
-    new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(skill))),
-    (byte) => byte.toString(16).padStart(2, "0"),
-  ).join("");
-  const json = (value: unknown, contentType = "application/json"): AgentDocument => ({
-    body: `${JSON.stringify(value, null, 2)}\n`,
-    contentType: `${contentType}; charset=utf-8`,
-  });
-  const description =
-    "Community dashboards for Metrix.Bar on macOS, Windows, and Linux (experimental).";
+  const digest = await sha256Hex(skill);
   return {
     "/llms.txt": {
       body: [
-        `# ${escapeMarkdown(manifest.registry.name)}\n\n> ${description}`,
+        `# ${escapeMarkdown(manifest.registry.name)}\n\n> ${SITE_DESCRIPTION}`,
         "Dashboard descriptions and setup notes retain their upstream language. Follow setup requirements and upstream licenses; downloads do not install dashboards.",
         "## Catalog",
         dashboardList(manifest),
@@ -59,7 +60,7 @@ The site supports ${locales.join(", ")}. English paths are unprefixed; other pag
       contentType: "text/plain; charset=utf-8",
     },
     [SKILL_PATH]: { body: skill, contentType: "text/markdown; charset=utf-8" },
-    "/.well-known/agent-skills/index.json": json({
+    "/.well-known/agent-skills/index.json": jsonDocument({
       $schema: "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
       skills: [
         {
@@ -72,7 +73,7 @@ The site supports ${locales.join(", ")}. English paths are unprefixed; other pag
         },
       ],
     }),
-    "/.well-known/api-catalog": json(
+    "/.well-known/api-catalog": jsonDocument(
       {
         linkset: [
           {
@@ -89,10 +90,10 @@ The site supports ${locales.join(", ")}. English paths are unprefixed; other pag
       },
       'application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"',
     ),
-    "/openapi.json": json(
+    "/openapi.json": jsonDocument(
       {
         openapi: "3.1.0",
-        info: { title: manifest.registry.name, version: "1.0.0", description },
+        info: { title: manifest.registry.name, version: "1.0.0", description: SITE_DESCRIPTION },
         servers: [{ url: siteURL(manifest).replace(/\/$/, "") }],
         security: [],
         paths: {
@@ -127,7 +128,7 @@ The site supports ${locales.join(", ")}. English paths are unprefixed; other pag
       },
       "application/vnd.oai.openapi+json",
     ),
-    "/.well-known/ai-catalog.json": json({
+    "/.well-known/ai-catalog.json": jsonDocument({
       specVersion: "1.0",
       host: { displayName: manifest.registry.name, identifier: siteURL(manifest) },
       entries: [

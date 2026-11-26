@@ -2,6 +2,10 @@ export const INDEX_PATH = "/dashboards/index.json";
 export const PAGE_CACHE = "public, max-age=60, s-maxage=300";
 export const ASSET_CACHE = "public, max-age=31536000, immutable";
 
+export function siteURL(manifest: Pick<Manifest, "registryURL">, path = "/"): string {
+  return new URL(path, manifest.registryURL).href;
+}
+
 export interface Dashboard {
   id: string;
   name: string;

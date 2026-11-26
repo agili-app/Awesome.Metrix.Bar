@@ -1,9 +1,8 @@
 import { dashboardLinks, sortedDashboards } from "../catalog.ts";
-import { baseLocale, dashboardPath, locales, localePath, type Locale } from "../i18n.ts";
+import { baseLocale, dashboardPath, localePath, resolveLocalePath, type Locale } from "../i18n.ts";
 import { registryLink } from "../metrix.ts";
 import * as m from "../paraglide/messages.js";
-import type { Dashboard, Manifest } from "../registry.ts";
-import { siteURL } from "../seo.ts";
+import { siteURL, type Dashboard, type Manifest } from "../registry.ts";
 
 export function escapeMarkdown(value: string): string {
   return value.replaceAll(/([\\`*_[\]<>])/g, "\\$1");
@@ -64,11 +63,14 @@ export function catalogMarkdown(manifest: Manifest, locale: Locale = baseLocale)
 }
 
 export function markdownPage(manifest: Manifest, path: string): string | undefined {
-  for (const locale of locales) {
-    if (path === localePath("/", locale)) return `${catalogMarkdown(manifest, locale)}\n`;
-    const dashboard = manifest.registry.dashboards.find(
-      ({ id }) => path === dashboardPath(id, locale),
-    );
-    if (dashboard) return `${dashboardMarkdown(dashboard, manifest, locale)}\n`;
-  }
+  const resolved = resolveLocalePath(path);
+  if (!resolved) return undefined;
+  if (resolved.path === "/") return `${catalogMarkdown(manifest, resolved.locale)}\n`;
+  if (!resolved.path.startsWith("/dashboards/")) return undefined;
+  const id = resolved.path.slice("/dashboards/".length);
+  if (!id || id.includes("/")) return undefined;
+  const dashboard = manifest.registry.dashboards.find(
+    (entry) => encodeURIComponent(entry.id) === id,
+  );
+  if (dashboard) return `${dashboardMarkdown(dashboard, manifest, resolved.locale)}\n`;
 }

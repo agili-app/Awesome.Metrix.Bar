@@ -1,8 +1,8 @@
 import { defineHandler } from "void/handler";
 import manifest from "../../.generated/manifest.json";
 import { dashboardPath, locales, localePath } from "../i18n.ts";
-import { PAGE_CACHE } from "../registry.ts";
-import { languageAlternates, siteURL } from "../seo.ts";
+import { PAGE_CACHE, siteURL } from "../registry.ts";
+import { languageAlternates } from "../seo.ts";
 
 function escapeXML(value: string): string {
   return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll('"', "&quot;");

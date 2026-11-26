@@ -1,13 +1,14 @@
-import { ActionLink } from "./action-link.tsx";
 import { Field, FieldLabel } from "@ui-sdk/react/field";
 import { Input } from "@ui-sdk/react/input";
 import { css } from "../../styled-system/css";
+import { flex, grid } from "../../styled-system/patterns";
 import { button } from "../../styled-system/recipes";
-import { registryLink } from "../metrix.ts";
 import { sortedDashboards } from "../catalog.ts";
 import { baseLocale, type Locale } from "../i18n.ts";
+import { registryLink } from "../metrix.ts";
 import * as m from "../paraglide/messages.js";
 import type { Manifest } from "../registry.ts";
+import { ActionLink } from "./action-link.tsx";
 import { DashboardCard } from "./dashboard.tsx";
 import { Site } from "./site.tsx";
 
@@ -30,7 +31,7 @@ export function Home({ manifest, locale = baseLocale }: { manifest: Manifest; lo
         })}
         aria-labelledby="intro"
       >
-        <header className={css({ display: "grid", gap: "5", minWidth: "0" })}>
+        <header className={grid({ gap: "5", minWidth: "0" })}>
           <p className={css({ textStyle: "eyebrow", color: "fg.muted" })}>
             {m.hero_eyebrow({}, { locale })}
           </p>
@@ -63,10 +64,7 @@ export function Home({ manifest, locale = baseLocale }: { manifest: Manifest; lo
           <ActionLink className={button()} href={registryLink(manifest.registryURL)}>
             {m.add_registry({}, { locale })}
           </ActionLink>
-          <Field
-            name="registry-url"
-            className={css({ display: "grid", gap: "2", mt: "2", minWidth: "0" })}
-          >
+          <Field name="registry-url" className={grid({ gap: "2", mt: "2", minWidth: "0" })}>
             <FieldLabel className={css({ fontSize: "xs", fontWeight: "semibold" })}>
               {m.registry_url_label({}, { locale })}
             </FieldLabel>
@@ -98,11 +96,10 @@ export function Home({ manifest, locale = baseLocale }: { manifest: Manifest; lo
       </section>
       <section aria-labelledby="dashboards">
         <header
-          className={css({
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "end",
-            flexWrap: "wrap",
+          className={flex({
+            justify: "space-between",
+            align: "end",
+            wrap: "wrap",
             gap: "4",
             mb: "7",
           })}

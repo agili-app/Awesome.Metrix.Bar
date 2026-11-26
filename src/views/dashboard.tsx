@@ -1,13 +1,15 @@
-import { ActionLink } from "./action-link.tsx";
 import { css, cx } from "../../styled-system/css";
+import { hstack } from "../../styled-system/patterns";
 import { button } from "../../styled-system/recipes";
 import { dashboardLinks } from "../catalog.ts";
 import { dashboardPath, type Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
 import type { Dashboard, Manifest } from "../registry.ts";
+import { ActionLink } from "./action-link.tsx";
 import { Author } from "./author.tsx";
-import { ProjectStars } from "./project-stars.tsx";
 import { DashboardIcon } from "./dashboard-icon.tsx";
+import { ExternalArrow } from "./icons.tsx";
+import { ProjectStars } from "./project-stars.tsx";
 
 export function DashboardCard({
   dashboard,
@@ -20,6 +22,7 @@ export function DashboardCard({
 }) {
   const repository = manifest.dashboardRepositories[dashboard.id];
   const links = dashboardLinks(dashboard, manifest);
+  const detailHref = dashboardPath(dashboard.id, locale);
   return (
     <article
       className={cx(
@@ -43,7 +46,7 @@ export function DashboardCard({
           gap: "3",
         })}
       >
-        <div className={css({ display: "flex", alignItems: "center", gap: "3", minWidth: "0" })}>
+        <div className={hstack({ gap: "3", minWidth: "0" })}>
           <DashboardIcon dashboard={dashboard} manifest={manifest} />
           <div className={css({ minWidth: "0" })}>
             <h3
@@ -54,7 +57,7 @@ export function DashboardCard({
                 "& a": { textDecoration: "none", _hover: { textDecoration: "underline" } },
               })}
             >
-              <a href={dashboardPath(dashboard.id, locale)} data-prefetch>
+              <a href={detailHref} data-prefetch>
                 {dashboard.name}
               </a>
             </h3>
@@ -122,7 +125,7 @@ export function DashboardCard({
         })}
       >
         <a
-          href={dashboardPath(dashboard.id, locale)}
+          href={detailHref}
           data-prefetch
           aria-label={m.view_details({ name: dashboard.name }, { locale })}
         >
@@ -134,7 +137,7 @@ export function DashboardCard({
             href={links.repository}
             aria-label={m.view_repository({ repository }, { locale })}
           >
-            GitHub <span aria-hidden="true">↗</span>
+            GitHub <ExternalArrow />
           </a>
         )}
         <ActionLink

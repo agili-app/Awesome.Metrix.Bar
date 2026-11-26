@@ -3,6 +3,7 @@ import { readFile, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { authors } from "../src/authors.ts";
 import { writeAtomic } from "./files.ts";
+import { runConcurrently } from "./http.ts";
 
 const root = resolve(import.meta.dirname, "..");
 const maxAge = 86_400_000;
@@ -25,7 +26,7 @@ export async function buildAvatars(
   fetchUpstream: typeof fetch = fetch,
   now = Date.now(),
 ): Promise<void> {
-  for (const author of authors) {
+  await runConcurrently(authors, 6, async (author) => {
     const path = join(cache, author.file);
     const cached = existsSync(path) ? await readFile(path) : undefined;
     let bytes: Uint8Array;
@@ -42,7 +43,7 @@ export async function buildAvatars(
     }
     if (bytes !== cached) await writeAtomic(path, bytes);
     await writeAtomic(join(output, author.file), bytes);
-  }
+  });
 }
 
 if (import.meta.main) {
