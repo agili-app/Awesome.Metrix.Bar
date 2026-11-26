@@ -1,5 +1,6 @@
 import { ForesightManager } from "js.foresight";
 import { createPrefetcher } from "../prefetch.ts";
+import { bindPreviewTriggers } from "./preview-triggers.ts";
 
 const modelContext = (document as Document & { modelContext?: { registerTool?: unknown } })
   .modelContext;
@@ -9,25 +10,11 @@ if (typeof modelContext?.registerTool === "function") {
 if (document.querySelector("[data-preview-gallery]")) {
   let lightboxPromise: Promise<typeof import("./preview-lightbox.tsx")> | undefined;
   const loadLightbox = () => (lightboxPromise ??= import("./preview-lightbox.tsx"));
-  document.addEventListener("click", (event) => {
-    if (
-      event.defaultPrevented ||
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey
-    ) {
-      return;
-    }
-    const trigger = (event.target as Element | null)?.closest<HTMLAnchorElement>(
-      "a[data-preview-trigger]",
-    );
-    if (!trigger) return;
-    event.preventDefault();
-    void loadLightbox().then(({ openPreviewTrigger }) => openPreviewTrigger(trigger));
-  });
-  void loadLightbox();
+  const unbindPreviews = bindPreviewTriggers(
+    (trigger) => void loadLightbox().then(({ openPreviewTrigger }) => openPreviewTrigger(trigger)),
+    () => void loadLightbox(),
+  );
+  import.meta.hot?.dispose(unbindPreviews);
 }
 
 const foresight = ForesightManager.initialize({

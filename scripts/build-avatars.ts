@@ -1,12 +1,10 @@
-import { existsSync } from "node:fs";
-import { readFile, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { authors } from "../src/authors.ts";
+import { cachedBinaryFile } from "./binary-cache.ts";
 import { writeAtomic } from "./files.ts";
 import { runConcurrently } from "./http.ts";
 
 const root = resolve(import.meta.dirname, "..");
-const maxAge = 86_400_000;
 
 async function fetchAvatar(url: string, fetchUpstream: typeof fetch): Promise<Uint8Array> {
   const response = await fetchUpstream(url, {
@@ -27,22 +25,14 @@ export async function buildAvatars(
   now = Date.now(),
 ): Promise<void> {
   await runConcurrently(authors, 6, async (author) => {
-    const path = join(cache, author.file);
-    const cached = existsSync(path) ? await readFile(path) : undefined;
-    let bytes: Uint8Array;
-    if (cached?.byteLength && now - (await stat(path)).mtimeMs < maxAge) {
-      bytes = cached;
-    } else {
-      try {
-        bytes = await fetchAvatar(author.url, fetchUpstream);
-      } catch (error) {
-        if (!cached?.byteLength) throw error;
-        console.warn(`Avatar refresh failed; using cached ${author.name}.`, error);
-        bytes = cached;
-      }
-    }
-    if (bytes !== cached) await writeAtomic(path, bytes);
-    await writeAtomic(join(output, author.file), bytes);
+    const bytes = await cachedBinaryFile({
+      path: join(cache, author.file),
+      now,
+      fetchBytes: () => fetchAvatar(author.url, fetchUpstream),
+      label: author.name,
+      required: true,
+    });
+    await writeAtomic(join(output, author.file), bytes!);
   });
 }
 

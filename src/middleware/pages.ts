@@ -1,7 +1,7 @@
 import type { Manifest } from "vite-plus";
 import { defineMiddleware } from "void/handler";
 import { isPagePath } from "../prefetch.ts";
-import { INDEX_PATH, PAGE_CACHE } from "../registry.ts";
+import { INDEX_PATH, MEDIA_CACHE, PAGE_CACHE } from "../registry.ts";
 
 type PageContext = Parameters<Parameters<typeof defineMiddleware>[0]>[0];
 
@@ -32,10 +32,11 @@ function applyResponseHeaders(context: PageContext) {
   if (context.res.status >= 400) {
     context.header("Cache-Control", "no-store");
     context.header("X-Robots-Tag", "noindex");
-  } else if (context.req.path.startsWith("/avatars/")) {
-    context.header("Cache-Control", "public, max-age=3600, s-maxage=86400");
-  } else if (context.req.path.startsWith("/previews/")) {
-    context.header("Cache-Control", "public, max-age=3600, s-maxage=86400");
+  } else if (
+    context.req.path.startsWith("/avatars/") ||
+    context.req.path.startsWith("/previews/")
+  ) {
+    context.header("Cache-Control", MEDIA_CACHE);
     context.header("X-Content-Type-Options", "nosniff");
   } else if (context.res.headers.get("Content-Type")?.startsWith("text/html")) {
     context.header("Cache-Control", PAGE_CACHE);

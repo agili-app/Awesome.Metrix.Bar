@@ -19,14 +19,14 @@ const galleryGrids = {
   }),
 } as const;
 
-function lightboxLabels(locale: Locale): PreviewLightboxLabels {
-  return {
-    close: m.preview_close({}, { locale }),
-    previous: m.preview_previous({}, { locale }),
-    next: m.preview_next({}, { locale }),
-    openOriginal: m.preview_open_original({}, { locale }),
-  };
-}
+const containImage = css({
+  display: "block",
+  maxW: "full",
+  w: "auto",
+  h: "auto",
+  objectFit: "contain",
+  rounded: "md",
+});
 
 function previewSlides(dashboard: Dashboard, manifest: Manifest, locale: Locale): PreviewSlide[] {
   return dashboardPreviews(dashboard, manifest).map((preview, index) => ({
@@ -38,7 +38,13 @@ function previewSlides(dashboard: Dashboard, manifest: Manifest, locale: Locale)
 }
 
 export function previewLabelsAttribute(locale: Locale): string {
-  return JSON.stringify(lightboxLabels(locale));
+  const labels: PreviewLightboxLabels = {
+    close: m.preview_close({}, { locale }),
+    previous: m.preview_previous({}, { locale }),
+    next: m.preview_next({}, { locale }),
+    openOriginal: m.preview_open_original({}, { locale }),
+  };
+  return JSON.stringify(labels);
 }
 
 export function DashboardPreviewCover({
@@ -89,15 +95,7 @@ export function DashboardPreviewCover({
         height={first.height}
         loading="lazy"
         decoding="async"
-        className={css({
-          display: "block",
-          maxW: "full",
-          maxH: "full",
-          w: "auto",
-          h: "auto",
-          objectFit: "contain",
-          rounded: "md",
-        })}
+        className={cx(containImage, css({ maxH: "full" }))}
       />
       {slides.length > 1 && (
         <span
@@ -141,13 +139,7 @@ export function DashboardPreviews({
     slides.length === 1 ? galleryGrids[1] : slides.length === 2 ? galleryGrids[2] : galleryGrids[3];
   return (
     <section
-      className={cx(
-        "dashboard-previews",
-        css({
-          gridColumn: { lg: "1 / -1" },
-          minWidth: "0",
-        }),
-      )}
+      className={cx("dashboard-previews", css({ gridColumn: { lg: "1 / -1" }, minWidth: "0" }))}
       aria-labelledby="previews"
       data-preview-gallery={dashboard.name}
       data-previews={JSON.stringify(slides)}
@@ -188,15 +180,7 @@ export function DashboardPreviews({
                 height={slide.height}
                 loading={index === 0 ? "eager" : "lazy"}
                 decoding="async"
-                className={css({
-                  display: "block",
-                  maxW: "full",
-                  maxH: "26rem",
-                  w: "auto",
-                  h: "auto",
-                  objectFit: "contain",
-                  rounded: "md",
-                })}
+                className={cx(containImage, css({ maxH: "26rem" }))}
               />
             </a>
           </figure>

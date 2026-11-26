@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { load } from "cheerio";
 import { avatarPath } from "../src/authors.ts";
 import { dashboardPath, locales, localePath } from "../src/i18n.ts";
-import { siteURL, type DashboardPreview, type Manifest } from "../src/registry.ts";
+import { MEDIA_CACHE, siteURL, type DashboardPreview, type Manifest } from "../src/registry.ts";
 import { get, runConcurrently, verifyCache } from "./http.ts";
 import { verifyCatalog } from "./verify-catalog.ts";
 import { createPageVerifier } from "./verify-page.ts";
@@ -73,7 +73,7 @@ export async function verifyPages(
     const url = new URL(path, origin);
     const response = await get(url);
     assert.equal(response.status, 200, `${author}: avatar unavailable`);
-    assert.equal(response.headers.get("Cache-Control"), "public, max-age=3600, s-maxage=86400");
+    assert.equal(response.headers.get("Cache-Control"), MEDIA_CACHE);
     const bytes = Buffer.from(await response.arrayBuffer());
     assert(bytes.byteLength, `${author}: empty avatar`);
     if (edgeCache) await verifyCache(url, sha256(bytes));
@@ -86,7 +86,7 @@ export async function verifyPages(
     const url = new URL(preview.path, origin);
     const response = await get(url);
     assert.equal(response.status, 200, `${preview.path}: preview unavailable`);
-    assert.equal(response.headers.get("Cache-Control"), "public, max-age=3600, s-maxage=86400");
+    assert.equal(response.headers.get("Cache-Control"), MEDIA_CACHE);
     assert.equal(response.headers.get("X-Content-Type-Options"), "nosniff");
     assert.equal(
       response.headers.get("Content-Type")?.split(";")[0]?.trim().toLowerCase(),
