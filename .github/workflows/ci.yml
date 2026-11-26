@@ -45,25 +45,25 @@ jobs:
       - run: vp exec cf deploy --prebuilt --mode production --dry-run
       - name: Verify production HTTP output
         run: |
-          vp preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/metrix-preview.log 2>&1 &
+          vp preview --host 127.0.0.1 --port 2937 --strictPort > /tmp/metrix-preview.log 2>&1 &
           preview_pid=$!
           trap 'kill "$preview_pid"; cat /tmp/metrix-preview.log' EXIT
           for attempt in {1..150}; do
-            if curl --silent --fail http://127.0.0.1:4173/dashboards/index.json > /dev/null; then
+            if curl --silent --fail http://127.0.0.1:2937/dashboards/index.json > /dev/null; then
               break
             fi
             sleep 0.2
           done
-          vp run verify:http -- http://127.0.0.1:4173
+          vp run verify:http -- http://127.0.0.1:2937
       - name: Verify development HTTP output
         run: |
-          vp dev --host 127.0.0.1 --port 5173 --strictPort > /tmp/metrix-worker.log 2>&1 &
+          vp dev --host 127.0.0.1 --port 2937 --strictPort > /tmp/metrix-worker.log 2>&1 &
           worker_pid=$!
           trap 'kill "$worker_pid"; cat /tmp/metrix-worker.log' EXIT
           for attempt in {1..150}; do
-            if curl --silent --fail http://127.0.0.1:5173/dashboards/index.json > /dev/null; then
+            if curl --silent --fail http://127.0.0.1:2937/dashboards/index.json > /dev/null; then
               break
             fi
             sleep 0.2
           done
-          vp run verify:http -- http://127.0.0.1:5173 --dev
+          vp run verify:http -- http://127.0.0.1:2937 --dev

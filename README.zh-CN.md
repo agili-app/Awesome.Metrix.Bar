@@ -59,7 +59,7 @@ vp run verify
 vp run dev
 ```
 
-开发服务器地址为 `http://localhost:5173/`。界面翻译位于 `messages/<locale>.json`，Paraglide 会在开发和构建时编译消息。修改翻译后，单独运行检查前可先执行 `vp run messages:build`。
+开发服务器地址为 `http://localhost:2937/`。界面翻译位于 `messages/<locale>.json`，Paraglide 会在开发和构建时编译消息。修改翻译后，单独运行检查前可先执行 `vp run messages:build`。
 
 项目 Star 在构建时刷新，本地缓存位于 `.cache/projects/`，有效期为 24 小时。设置 `GH_TOKEN` 可使用 GitHub 认证请求，CI 使用内置令牌。请求失败时沿用缓存；无可用数据时显示 `—` 并排在最后。线上目录随部署更新。
 

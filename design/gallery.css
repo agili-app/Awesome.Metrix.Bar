@@ -1,0 +1,96 @@
+/* Layout for the internal gallery only; component looks come from the theme. */
+.gallery {
+  display: grid;
+  gap: 3.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem 6rem;
+}
+
+.gallery-intro h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: var(--colors-fg-headline);
+}
+
+.gallery > section > h2 {
+  margin-bottom: 1.25rem;
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.gallery-intro {
+  display: grid;
+  gap: 1rem;
+  max-width: 44rem;
+  color: var(--colors-fg-muted);
+}
+
+.gallery-eyebrow,
+.gallery-cell > h3 {
+  font-family: var(--fonts-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--colors-fg-subtle);
+}
+
+.gallery-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 1rem;
+  list-style: none;
+  font-size: 0.8125rem;
+}
+
+.gallery-swatches li {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.gallery-swatch {
+  height: 3.5rem;
+  border: 1px solid var(--colors-border);
+  border-radius: 0.5rem;
+}
+
+.gallery-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  gap: 1.5rem;
+}
+
+.gallery-cell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.25rem;
+  border: 1px solid var(--colors-border);
+  border-radius: 0.5rem;
+  background: var(--colors-bg-surface);
+}
+
+.gallery-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.gallery-cell:is([aria-label="waterfall"], [aria-label="calendar"], [aria-label="color-picker"]) {
+  grid-column: span 2;
+}

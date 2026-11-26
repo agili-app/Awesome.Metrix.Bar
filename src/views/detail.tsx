@@ -1,6 +1,6 @@
-import { css } from "../../styled-system/css";
+import { css, cx } from "../../styled-system/css";
 import { grid } from "../../styled-system/patterns";
-import { button } from "../../styled-system/recipes";
+import { button, textLink } from "../../styled-system/recipes";
 import { dashboardLinks } from "../catalog.ts";
 import { baseLocale, dashboardPath, localePath, type Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
@@ -10,7 +10,7 @@ import { DashboardIcon } from "./dashboard-icon.tsx";
 import { DashboardInfo } from "./dashboard-info.tsx";
 import { DashboardPreviews } from "./dashboard-previews.tsx";
 import { ExternalArrow } from "./icons.tsx";
-import { Site } from "./site.tsx";
+import { pageContainer, Site } from "./site.tsx";
 
 export function DashboardDetail({
   dashboard,
@@ -25,144 +25,157 @@ export function DashboardDetail({
   const repository = manifest.dashboardRepositories[dashboard.id];
   return (
     <Site manifest={manifest} locale={locale} path={dashboardPath(dashboard.id)}>
-      <nav
-        className={css({ py: "4", mb: { base: "5", md: "8" }, color: "fg.muted", fontSize: "sm" })}
-        aria-label={m.breadcrumb({}, { locale })}
-      >
-        <ol
+      <div className={pageContainer}>
+        <nav
           className={css({
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "3",
-            listStyle: "none",
-            "& li + li::before": { content: '"/"', mr: "3" },
+            py: "4",
+            mb: { base: "5", md: "8" },
+            color: "fg.muted",
+            fontSize: "sm",
           })}
+          aria-label={m.breadcrumb({}, { locale })}
         >
-          <li>
-            <a href={localePath("/", locale)} data-prefetch>
-              {m.dashboards({}, { locale })}
-            </a>
-          </li>
-          <li aria-current="page">{dashboard.name}</li>
-        </ol>
-      </nav>
-      <div
-        className={css({
-          display: "grid",
-          gridTemplateColumns: { base: "minmax(0, 1fr)", lg: "minmax(0, 1.75fr) minmax(0, 1fr)" },
-          gap: { base: "8", lg: "10" },
-          alignItems: "start",
-        })}
-      >
-        <header
-          className={css({
-            display: "flex",
-            alignItems: "start",
-            gap: "4",
-            py: "2",
-            minWidth: "0",
-          })}
-        >
-          <DashboardIcon dashboard={dashboard} manifest={manifest} loading="eager" />
-          <div className={grid({ gap: "4", minWidth: "0" })}>
-            {dashboard.category && (
-              <p className={css({ textStyle: "eyebrow", color: "fg.muted" })}>
-                {dashboard.category}
-              </p>
-            )}
-            <h1 className={css({ textStyle: "display", color: "fg.headline" })}>
-              {dashboard.name}
-            </h1>
-            <p className={css({ fontSize: "lg", color: "fg.muted", whiteSpace: "pre-line" })}>
-              {dashboard.description ?? m.fallback_description({}, { locale })}
-            </p>
-            {links.repository && repository && (
+          <ol
+            className={css({
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "3",
+              listStyle: "none",
+              "& li + li::before": { content: '"/"', mr: "3", color: "fg.subtle" },
+            })}
+          >
+            <li>
               <a
-                className={css({ justifySelf: "start", fontSize: "sm", fontWeight: "semibold" })}
-                href={links.repository}
-                aria-label={m.view_repository({ repository }, { locale })}
+                className={textLink({ tone: "muted" })}
+                href={localePath("/", locale)}
+                data-prefetch
               >
-                {m.github_project({}, { locale })} <ExternalArrow />
+                {m.dashboards({}, { locale })}
               </a>
-            )}
-          </div>
-        </header>
-        <article
-          className={css({ layerStyle: "panel", p: "6", display: "grid", gap: "4" })}
-          aria-labelledby="install"
-        >
-          <h2 id="install" className={css({ textStyle: "heading" })}>
-            {m.install_heading({}, { locale })}
-          </h2>
-          <ActionLink className={button()} href={links.install}>
-            {m.install_in_app({}, { locale })}
-          </ActionLink>
-          <ActionLink className={button({ visual: "outline" })} href={links.download} download>
-            {m.download_bar({}, { locale })}
-          </ActionLink>
-          <small className={css({ color: "fg.muted", fontSize: "xs" })}>
-            {m.install_requirement({}, { locale })}
-          </small>
-        </article>
-        <DashboardPreviews dashboard={dashboard} manifest={manifest} locale={locale} />
+            </li>
+            <li aria-current="page">{dashboard.name}</li>
+          </ol>
+        </nav>
         <div
           className={css({
             display: "grid",
-            gap: "8",
-            minWidth: "0",
-            "& h2": { textStyle: "heading", mb: "4" },
-            "& p": { color: "fg.muted" },
+            gridTemplateColumns: { base: "minmax(0, 1fr)", lg: "minmax(0, 1.75fr) minmax(0, 1fr)" },
+            gap: { base: "8", lg: "10" },
+            alignItems: "start",
           })}
         >
-          <section aria-labelledby="setup">
-            <h2 id="setup">
-              {dashboard.docs ? m.setup_heading({}, { locale }) : m.getting_started({}, { locale })}
-            </h2>
-            {dashboard.docs ? (
-              <p className={css({ whiteSpace: "pre-wrap" })}>{dashboard.docs}</p>
-            ) : (
-              <p>{m.setup_fallback({}, { locale })}</p>
-            )}
-          </section>
-          <section aria-labelledby="updates">
-            <h2 id="updates">{m.updates_heading({}, { locale })}</h2>
-            <p>{m.updates_description({}, { locale })}</p>
-          </section>
-          <details
+          <header
             className={css({
-              borderTopWidth: "1px",
-              borderColor: "border",
-              pt: "5",
-              "& summary": { cursor: "pointer", fontWeight: "semibold", minHeight: "8" },
-              "& p": { mt: "4", mb: "3", fontSize: "sm" },
+              display: "flex",
+              alignItems: "start",
+              gap: "4",
+              py: "2",
+              minWidth: "0",
             })}
           >
-            <summary>{m.verify_download({}, { locale })}</summary>
-            <p>{m.verify_description({}, { locale })}</p>
-            <code
+            <DashboardIcon dashboard={dashboard} manifest={manifest} loading="eager" />
+            <div className={grid({ gap: "4", minWidth: "0" })}>
+              {dashboard.category && (
+                <p className={css({ textStyle: "eyebrow", color: "fg.muted" })}>
+                  {dashboard.category}
+                </p>
+              )}
+              <h1 className={css({ textStyle: "display", color: "fg.headline" })}>
+                {dashboard.name}
+              </h1>
+              <p className={css({ textStyle: "lead", color: "fg.muted", whiteSpace: "pre-line" })}>
+                {dashboard.description ?? m.fallback_description({}, { locale })}
+              </p>
+              {links.repository && repository && (
+                <a
+                  className={cx(textLink(), css({ justifySelf: "start", fontSize: "sm" }))}
+                  href={links.repository}
+                  aria-label={m.view_repository({ repository }, { locale })}
+                >
+                  {m.github_project({}, { locale })} <ExternalArrow />
+                </a>
+              )}
+            </div>
+          </header>
+          <article
+            className={css({ layerStyle: "offShadow", p: "6", display: "grid", gap: "4" })}
+            aria-labelledby="install"
+          >
+            <h2 id="install" className={css({ textStyle: "heading" })}>
+              {m.install_heading({}, { locale })}
+            </h2>
+            <ActionLink className={button()} href={links.install}>
+              {m.install_in_app({}, { locale })}
+            </ActionLink>
+            <ActionLink className={button({ visual: "secondary" })} href={links.download} download>
+              {m.download_bar({}, { locale })}
+            </ActionLink>
+            <small className={css({ color: "fg.muted", fontSize: "xs" })}>
+              {m.install_requirement({}, { locale })}
+            </small>
+          </article>
+          <DashboardPreviews dashboard={dashboard} manifest={manifest} locale={locale} />
+          <div
+            className={css({
+              display: "grid",
+              gap: "10",
+              minWidth: "0",
+              "& h2": { textStyle: "heading", mb: "4" },
+              "& p": { color: "fg.muted" },
+            })}
+          >
+            <section aria-labelledby="setup">
+              <h2 id="setup">
+                {dashboard.docs
+                  ? m.setup_heading({}, { locale })
+                  : m.getting_started({}, { locale })}
+              </h2>
+              {dashboard.docs ? (
+                <p className={css({ whiteSpace: "pre-wrap" })}>{dashboard.docs}</p>
+              ) : (
+                <p>{m.setup_fallback({}, { locale })}</p>
+              )}
+            </section>
+            <section aria-labelledby="updates">
+              <h2 id="updates">{m.updates_heading({}, { locale })}</h2>
+              <p>{m.updates_description({}, { locale })}</p>
+            </section>
+            <details
               className={css({
-                display: "block",
-                p: "4",
-                bg: "bg.subtle",
-                rounded: "md",
-                borderWidth: "1px",
+                borderTopWidth: "thin",
                 borderColor: "border",
-                fontFamily: "mono",
-                fontSize: "xs",
-                overflowWrap: "anywhere",
+                pt: "5",
+                "& summary": { cursor: "pointer", fontWeight: "semibold", minHeight: "8" },
+                "& p": { mt: "4", mb: "3", fontSize: "sm" },
               })}
             >
-              {dashboard.sha256}
-            </code>
-          </details>
+              <summary>{m.verify_download({}, { locale })}</summary>
+              <p>{m.verify_description({}, { locale })}</p>
+              <code
+                className={css({
+                  display: "block",
+                  p: "4",
+                  bg: "bg.subtle",
+                  rounded: "md",
+                  borderWidth: "thin",
+                  borderColor: "border",
+                  fontFamily: "mono",
+                  fontSize: "xs",
+                  overflowWrap: "anywhere",
+                })}
+              >
+                {dashboard.sha256}
+              </code>
+            </details>
+          </div>
+          <DashboardInfo dashboard={dashboard} homepage={links.homepage} locale={locale} />
         </div>
-        <DashboardInfo dashboard={dashboard} homepage={links.homepage} locale={locale} />
+        <p className={css({ mt: "12", fontSize: "sm" })}>
+          <a className={textLink()} href={`${localePath("/", locale)}#dashboards`} data-prefetch>
+            ← {m.browse_all({}, { locale })}
+          </a>
+        </p>
       </div>
-      <p className={css({ mt: "10", fontSize: "sm", fontWeight: "semibold" })}>
-        <a href={`${localePath("/", locale)}#dashboards`} data-prefetch>
-          ← {m.browse_all({}, { locale })}
-        </a>
-      </p>
     </Site>
   );
 }

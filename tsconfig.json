@@ -22,6 +22,7 @@
     "tests/**/*.ts",
     "vite.config.ts",
     "void.config.ts",
-    "panda.config.ts"
+    "panda.config.ts",
+    "theme/**/*.ts"
   ]
 }

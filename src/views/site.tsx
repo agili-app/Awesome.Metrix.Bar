@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { css, cx } from "../../styled-system/css";
 import { container, flex } from "../../styled-system/patterns";
+import { textLink } from "../../styled-system/recipes";
 import { localePath, type Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
 import type { Manifest } from "../registry.ts";
@@ -8,17 +9,24 @@ import { ExternalArrow, GitHubIcon } from "./icons.tsx";
 import { LanguagePicker } from "./language-picker.tsx";
 import "./site.css";
 
-const pageContainer = container({ width: "full", maxWidth: "1200px", px: { base: "5", md: "8" } });
+export const pageContainer = container({
+  width: "full",
+  maxWidth: "1200px",
+  px: { base: "5", md: "8" },
+});
 
 export function Site({
   manifest,
   locale,
   path = "/",
+  tone,
   children,
 }: {
   manifest: Manifest;
   locale: Locale;
   path?: string;
+  /** `main` paints the header with the hero band so a full-bleed hero can continue it. */
+  tone?: "main";
   children: ReactNode;
 }) {
   const homePath = localePath("/", locale);
@@ -31,10 +39,14 @@ export function Site({
           top: "4",
           left: "4",
           zIndex: "10",
-          p: "3",
+          px: "4",
+          py: "2",
           bg: "accent",
-          color: "accent.fg",
-          rounded: "md",
+          color: "fg.onAccent",
+          fontWeight: "semibold",
+          borderWidth: "thick",
+          borderColor: "border.ink",
+          rounded: "control",
           transform: "translateY(-200%)",
           _focus: { transform: "translateY(0)" },
         })}
@@ -42,9 +54,13 @@ export function Site({
       >
         {m.skip_content({}, { locale })}
       </a>
-      <header className={cx(pageContainer, css({ py: { base: "5", md: "7" } }))}>
+      <header className={tone === "main" ? css({ bg: "bg.main" }) : undefined}>
         <nav
-          className={flex({ align: "center", justify: "space-between", gap: "4", wrap: "wrap" })}
+          className={cx(
+            pageContainer,
+            flex({ align: "center", justify: "space-between", gap: "4", wrap: "wrap" }),
+            css({ py: { base: "5", md: "6" } }),
+          )}
           aria-label={m.main_navigation({}, { locale })}
         >
           <a
@@ -52,10 +68,9 @@ export function Site({
               display: "inline-flex",
               alignItems: "center",
               gap: "2.5",
-              fontWeight: "800",
+              fontWeight: "bold",
               fontSize: "lg",
               letterSpacing: "tight",
-              textDecoration: "none",
             })}
             href={homePath}
             data-prefetch
@@ -63,11 +78,11 @@ export function Site({
             <span
               aria-hidden="true"
               className={css({
-                width: "3",
-                height: "3",
+                width: "3.5",
+                height: "3.5",
                 bg: "accent",
-                borderWidth: "2px",
-                borderColor: "border.strong",
+                borderWidth: "thick",
+                borderColor: "border.ink",
                 rounded: "sm",
                 flexShrink: "0",
               })}
@@ -83,14 +98,17 @@ export function Site({
               gap: { base: "4", md: "6" },
               listStyle: "none",
               fontSize: "sm",
-              fontWeight: "semibold",
-              "& a": {
+              fontWeight: "medium",
+              "& > li > a, & summary": {
                 display: "inline-flex",
                 alignItems: "center",
+                gap: "1",
                 minHeight: "8",
                 whiteSpace: "nowrap",
-                textDecoration: "none",
-                _hover: { textDecoration: "underline" },
+                color: "fg.muted",
+                transitionProperty: "color",
+                transitionDuration: "fast",
+                _hover: { color: "fg" },
               },
             })}
           >
@@ -119,14 +137,12 @@ export function Site({
           </ul>
         </nav>
       </header>
-      <main id="main" className={pageContainer}>
-        {children}
-      </main>
+      <main id="main">{children}</main>
       <footer
         className={cx(
           pageContainer,
           css({
-            mt: "16",
+            mt: "20",
             py: "8",
             display: "flex",
             justifyContent: "space-between",
@@ -135,15 +151,20 @@ export function Site({
             gap: "3",
             color: "fg.muted",
             fontSize: "sm",
-            borderTopWidth: "1px",
+            borderTopWidth: "thin",
             borderColor: "border",
           }),
         )}
       >
         <p>{m.footer_description({}, { locale })}</p>
         <p>
-          <a href="/dashboards/index.json">{m.registry_json({}, { locale })}</a> ·{" "}
-          <a href="https://metrix.bar/docs/registries.md">{m.registry_guide({}, { locale })}</a>
+          <a className={textLink({ tone: "muted" })} href="/dashboards/index.json">
+            {m.registry_json({}, { locale })}
+          </a>{" "}
+          ·{" "}
+          <a className={textLink({ tone: "muted" })} href="https://metrix.bar/docs/registries.md">
+            {m.registry_guide({}, { locale })}
+          </a>
         </p>
       </footer>
     </>

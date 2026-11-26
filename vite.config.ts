@@ -5,12 +5,23 @@ import { cloudflareTest } from "@cloudflare/vitest-plugin";
 import { paraglideVitePlugin } from "@inlang/paraglide-js";
 import pandacss from "@pandacss/vite";
 import { defineConfig } from "vite-plus";
+import { designPlugin } from "./scripts/design-plugin.ts";
+import { registryPlugin } from "./scripts/registry-plugin.ts";
 import voidConfig from "./void.config.ts";
 
 export default defineConfig({
+  server: { port: 2937, strictPort: true },
+  preview: { port: 2937, strictPort: true },
   plugins: process.env.VITEST
     ? []
-    : [pandacss(), paraglideVitePlugin({ project: "./project.inlang" }), voidPlugin(), voidReact()],
+    : [
+        registryPlugin(),
+        designPlugin(),
+        pandacss(),
+        paraglideVitePlugin({ project: "./project.inlang" }),
+        voidPlugin(),
+        voidReact(),
+      ],
   environments: {
     client: {
       build: {
@@ -57,6 +68,7 @@ export default defineConfig({
     ],
   },
   test: {
+    globalSetup: ["./scripts/test-setup.ts"],
     projects: [
       {
         extends: true,

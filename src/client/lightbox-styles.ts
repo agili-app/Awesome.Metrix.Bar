@@ -1,13 +1,12 @@
 import { css, cx } from "../../styled-system/css";
+import { badge, button } from "../../styled-system/recipes";
 
 export const backdropStyle = css({
   position: "fixed",
   inset: "0",
-  bg: "rgba(0, 0, 0, 0.78)",
   backdropFilter: "blur(4px)",
-  transition: "opacity 160ms ease",
+  transition: "opacity 150ms ease",
   "&[data-starting-style], &[data-ending-style]": { opacity: "0" },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
 export const contentStyle = css({
@@ -17,12 +16,11 @@ export const contentStyle = css({
   w: "min(64rem, calc(100vw - 1.5rem))",
   h: "fit-content",
   maxH: "calc(100dvh - 1.5rem)",
-  bg: "bg.surface",
+  layerStyle: "offShadow",
+  p: "0",
+  gap: "0",
   color: "fg",
-  borderWidth: "2px",
-  borderColor: "border.strong",
-  rounded: "2xl",
-  boxShadow: "raised",
+  fontSize: "md",
   overflow: "hidden",
   display: "grid",
   gridTemplateRows: "auto minmax(0, 1fr) auto",
@@ -31,7 +29,6 @@ export const contentStyle = css({
     opacity: "0",
     transform: "scale(0.97)",
   },
-  "@media (prefers-reduced-motion: reduce)": { transition: "none" },
 });
 
 export const headerStyle = css({
@@ -41,7 +38,7 @@ export const headerStyle = css({
   gap: "3",
   px: { base: "4", sm: "5" },
   py: "3",
-  borderBottomWidth: "1px",
+  borderBottomWidth: "thin",
   borderColor: "border",
   minWidth: "0",
 });
@@ -54,26 +51,13 @@ export const titleGroupStyle = css({
 });
 
 export const titleStyle = css({
-  fontSize: "lg",
-  fontWeight: "bold",
-  lineHeight: "1.2",
+  textStyle: "title",
   overflow: "hidden",
   textOverflow: "ellipsis",
   whiteSpace: "nowrap",
 });
 
-export const counterStyle = css({
-  flexShrink: "0",
-  px: "2",
-  py: "0.5",
-  bg: "bg.subtle",
-  borderWidth: "1px",
-  borderColor: "border",
-  rounded: "md",
-  fontFamily: "mono",
-  fontSize: "xs",
-  color: "fg.muted",
-});
+export const counterStyle = badge();
 
 export const actionsStyle = css({
   display: "flex",
@@ -82,27 +66,8 @@ export const actionsStyle = css({
   flexShrink: "0",
 });
 
-export const iconButtonStyle = css({
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  minW: "10",
-  minH: "10",
-  px: "2.5",
-  bg: "bg.surface",
-  color: "fg",
-  borderWidth: "2px",
-  borderColor: "border.strong",
-  rounded: "lg",
-  fontSize: "sm",
-  fontWeight: "bold",
-  lineHeight: "1",
-  boxShadow: "offset",
-  cursor: "pointer",
-  textDecoration: "none",
-  _hover: { bg: "bg.subtle", boxShadow: "raised", textDecoration: "none" },
-  _active: { boxShadow: "none" },
-});
+export const actionButtonStyle = button({ visual: "outline", size: "sm" });
+export const closeButtonStyle = button({ visual: "outline", size: "icon" });
 
 export const stageStyle = css({
   position: "relative",
@@ -116,28 +81,19 @@ export const stageStyle = css({
   overflow: "hidden",
 });
 
-const navButtonStyle = css({
-  position: "absolute",
-  top: "50%",
-  transform: "translateY(-50%)",
-  display: { base: "none", sm: "inline-flex" },
-  alignItems: "center",
-  justifyContent: "center",
-  w: "11",
-  h: "11",
-  bg: "bg.surface",
-  color: "fg",
-  borderWidth: "2px",
-  borderColor: "border.strong",
-  rounded: "lg",
-  fontSize: "xl",
-  fontWeight: "bold",
-  lineHeight: "1",
-  boxShadow: "offset",
-  cursor: "pointer",
-  _hover: { bg: "accent", color: "accent.fg", boxShadow: "raised" },
-  _active: { boxShadow: "none" },
-});
+const navButtonStyle = cx(
+  button({ visual: "outline", size: "icon" }),
+  css({
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    display: { base: "none", sm: "inline-flex" },
+    w: "11",
+    h: "11",
+    fontSize: "xl",
+    boxShadow: "md",
+  }),
+);
 
 export const prevButtonStyle = cx(navButtonStyle, css({ left: { base: "2", sm: "3" } }));
 export const nextButtonStyle = cx(navButtonStyle, css({ right: { base: "2", sm: "3" } }));
@@ -157,7 +113,7 @@ export const footerStyle = css({
   gap: "3",
   px: { base: "4", sm: "5" },
   py: "3",
-  borderTopWidth: "1px",
+  borderTopWidth: "thin",
   borderColor: "border",
   justifyItems: "center",
 });
@@ -183,18 +139,16 @@ export const thumbButtonStyle = css({
   w: "14",
   h: "12",
   p: "1",
-  bg: "bg.subtle",
+  bg: "bg.muted",
   borderWidth: "2px",
   borderColor: "border",
-  rounded: "lg",
+  rounded: "md",
   cursor: "pointer",
   overflow: "hidden",
-  _hover: { borderColor: "border.strong" },
-  "&[aria-current=true]": {
-    borderColor: "border.strong",
-    bg: "accent",
-    boxShadow: "offset",
-  },
+  transitionProperty: "background-color, border-color",
+  transitionDuration: "fast",
+  _hover: { bg: "bg.muted.hover" },
+  "&[aria-current=true]": { borderColor: "border.ink", bg: "accent.wash" },
 });
 
 export const thumbImageStyle = css({

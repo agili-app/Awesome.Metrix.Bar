@@ -59,7 +59,7 @@ vp run verify
 vp run dev
 ```
 
-The development server runs at `http://localhost:5173/`. Translate UI text in `messages/<locale>.json`; Paraglide compiles messages during development and builds. Run `vp run messages:build` before standalone checks after editing translations.
+The development server runs at `http://localhost:2937/`. Translate UI text in `messages/<locale>.json`; Paraglide compiles messages during development and builds. Run `vp run messages:build` before standalone checks after editing translations.
 
 Project stars refresh during builds with a 24-hour local cache in `.cache/projects/`. Set `GH_TOKEN` for authenticated GitHub requests; CI uses its built-in token. Failed requests keep cached counts; unavailable counts show `—` and sort last. The live catalog updates on deployment.
 

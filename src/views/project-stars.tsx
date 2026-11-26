@@ -27,10 +27,11 @@ export function ProjectStars({
           minHeight: "6",
           color: "fg",
           rounded: "sm",
-          "& rect": { fill: "token(colors.bg.subtle)", stroke: "token(colors.border.strong)" },
+          _hover: { "& rect": { fill: "token(colors.bg.muted)" } },
+          "& rect": { fill: "token(colors.bg.surface)", stroke: "token(colors.border)" },
           "& path": {
             fill: "token(colors.accent)",
-            stroke: "token(colors.border.strong)",
+            stroke: "token(colors.accent.emphasis)",
             strokeWidth: "1px",
           },
           "& text": {

@@ -1,4 +1,5 @@
 import { css, cx } from "../../styled-system/css";
+import { badge } from "../../styled-system/recipes";
 import { dashboardPreviews } from "../catalog.ts";
 import type { Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
@@ -77,14 +78,15 @@ export function DashboardPreviewCover({
           justifyContent: "center",
           h: "48",
           p: "3",
-          bg: "bg.subtle",
-          borderWidth: "1px",
+          bg: "bg.muted",
+          borderWidth: "thin",
           borderColor: "border",
           rounded: "lg",
           overflow: "hidden",
-          textDecoration: "none",
           cursor: "zoom-in",
-          _hover: { borderColor: "border.strong" },
+          transitionProperty: "background-color",
+          transitionDuration: "fast",
+          _hover: { bg: "bg.muted.hover" },
         }),
       )}
     >
@@ -100,22 +102,10 @@ export function DashboardPreviewCover({
       {slides.length > 1 && (
         <span
           aria-hidden="true"
-          className={css({
-            position: "absolute",
-            right: "2",
-            bottom: "2",
-            px: "2",
-            py: "0.5",
-            bg: "bg.surface",
-            color: "fg",
-            borderWidth: "1px",
-            borderColor: "border.strong",
-            rounded: "md",
-            fontFamily: "mono",
-            fontSize: "xs",
-            fontWeight: "bold",
-            lineHeight: "1.3",
-          })}
+          className={cx(
+            badge({ visual: "solid" }),
+            css({ position: "absolute", right: "2", bottom: "2" }),
+          )}
         >
           1 / {slides.length}
         </span>
@@ -163,14 +153,14 @@ export function DashboardPreviews({
                 justifyContent: "center",
                 h: "full",
                 p: "3",
-                bg: "bg.subtle",
-                borderWidth: "2px",
-                borderColor: "border.strong",
-                rounded: "xl",
-                boxShadow: "offset",
-                textDecoration: "none",
+                bg: "bg.muted",
+                borderWidth: "thin",
+                borderColor: "border",
+                rounded: "lg",
                 cursor: "zoom-in",
-                _hover: { boxShadow: "raised" },
+                transitionProperty: "background-color",
+                transitionDuration: "fast",
+                _hover: { bg: "bg.muted.hover" },
               })}
             >
               <img

@@ -1,6 +1,6 @@
 import { css, cx } from "../../styled-system/css";
 import { hstack } from "../../styled-system/patterns";
-import { button } from "../../styled-system/recipes";
+import { badge, button, card, textLink } from "../../styled-system/recipes";
 import { dashboardLinks } from "../catalog.ts";
 import { dashboardPath, type Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
@@ -24,55 +24,19 @@ export function DashboardCard({
   const repository = manifest.dashboardRepositories[dashboard.id];
   const links = dashboardLinks(dashboard, manifest);
   const detailHref = dashboardPath(dashboard.id, locale);
+  const classes = card();
   return (
-    <article
-      className={cx(
-        "dashboard-card",
-        css({
-          layerStyle: "panel",
-          p: { base: "5", md: "6" },
-          display: "flex",
-          flexDirection: "column",
-          gap: "4",
-          minWidth: "0",
-        }),
-      )}
-    >
-      <div
-        className={css({
-          display: "flex",
-          alignItems: "start",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: "3",
-        })}
-      >
+    <article className={cx("dashboard-card", classes.root)}>
+      <div className={classes.header}>
         <div className={hstack({ gap: "3", minWidth: "0" })}>
           <DashboardIcon dashboard={dashboard} manifest={manifest} />
           <div className={css({ minWidth: "0" })}>
-            <h3
-              className={css({
-                fontSize: "lg",
-                fontWeight: "bold",
-                lineHeight: "1.3",
-                "& a": { textDecoration: "none", _hover: { textDecoration: "underline" } },
-              })}
-            >
+            <h3 className={classes.title}>
               <a href={detailHref} data-prefetch>
                 {dashboard.name}
               </a>
             </h3>
-            <p
-              className={css({
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "center",
-                gap: "1.5",
-                mt: "2",
-                fontSize: "xs",
-                color: "fg.muted",
-              })}
-            >
+            <p className={classes.meta}>
               {dashboard.author && (
                 <>
                   <Author name={dashboard.author} />
@@ -91,42 +55,16 @@ export function DashboardCard({
           />
         )}
       </div>
-      <p className={css({ color: "fg.muted", fontSize: "sm", whiteSpace: "pre-line" })}>
+      <p className={classes.body}>
         {dashboard.description ?? m.fallback_description({}, { locale })}
       </p>
       <DashboardPreviewCover dashboard={dashboard} manifest={manifest} locale={locale} />
       {dashboard.category && (
-        <small
-          className={css({
-            alignSelf: "start",
-            bg: "bg.subtle",
-            px: "2.5",
-            py: "1",
-            borderWidth: "1px",
-            borderColor: "border",
-            rounded: "md",
-            fontSize: "xs",
-            color: "fg.muted",
-          })}
-        >
-          {dashboard.category}
-        </small>
+        <small className={cx(badge(), css({ alignSelf: "start" }))}>{dashboard.category}</small>
       )}
-      <footer
-        className={css({
-          display: "flex",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "4",
-          mt: "auto",
-          pt: "4",
-          borderTopWidth: "1px",
-          borderColor: "border",
-          fontSize: "sm",
-          fontWeight: "semibold",
-        })}
-      >
+      <footer className={classes.footer}>
         <a
+          className={textLink()}
           href={detailHref}
           data-prefetch
           aria-label={m.view_details({ name: dashboard.name }, { locale })}
@@ -135,7 +73,7 @@ export function DashboardCard({
         </a>
         {repository && (
           <a
-            className={css({ color: "fg.muted" })}
+            className={textLink({ tone: "muted" })}
             href={links.repository}
             aria-label={m.view_repository({ repository }, { locale })}
           >
@@ -143,7 +81,7 @@ export function DashboardCard({
           </a>
         )}
         <ActionLink
-          className={cx(button({ visual: "outline" }), css({ ml: "auto" }))}
+          className={cx(button({ visual: "outline", size: "sm" }), css({ ml: "auto" }))}
           href={links.install}
           aria-label={m.install_named({ name: dashboard.name }, { locale })}
         >

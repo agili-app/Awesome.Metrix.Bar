@@ -1,5 +1,8 @@
 @layer ui-sdk;
+/* ui-sdk prepends its runtime layer, so web.css gets its own layer above Panda's preflight. */
+@layer reset, ui-sdk-web;
 @layer reset, base, tokens, recipes, utilities;
+@import "@ui-sdk/core/web.css" layer(ui-sdk-web);
 
 @layer ui-sdk {
   :where([data-slot][hidden]:not([hidden="until-found"])) {

@@ -7,7 +7,7 @@ export function LanguagePicker({ locale, path }: { locale: Locale; path: string 
     <details className={css({ position: "relative" })}>
       <summary
         aria-label={`${m.language_picker({}, { locale })}: ${languageNames[locale]}`}
-        className={css({ cursor: "pointer", minHeight: "8", py: "1.5", whiteSpace: "nowrap" })}
+        className={css({ cursor: "pointer", py: "1.5" })}
       >
         <span lang={locale}>{languageNames[locale]}</span>
       </summary>
@@ -20,12 +20,12 @@ export function LanguagePicker({ locale, path }: { locale: Locale; path: string 
           zIndex: "20",
           width: "max-content",
           minWidth: "44",
-          layerStyle: "panel",
-          p: "2",
-          boxShadow: "offset",
+          layerStyle: "card",
+          boxShadow: "lg",
+          p: "1.5",
           listStyle: "none",
           display: "grid",
-          gap: "1",
+          gap: "0.5",
         })}
       >
         {locales.map((language) => {
@@ -39,17 +39,14 @@ export function LanguagePicker({ locale, path }: { locale: Locale; path: string 
                 lang={language}
                 aria-current={isCurrent ? "page" : undefined}
                 className={css({
+                  display: "block",
                   width: "full",
                   px: "3",
                   py: "1.5",
                   rounded: "sm",
-                  _hover: { bg: "bg.subtle" },
-                  _currentPage: {
-                    bg: "accent",
-                    color: "accent.fg",
-                    fontWeight: "bold",
-                    textDecoration: "underline",
-                  },
+                  color: "fg",
+                  _hover: { bg: "bg.muted" },
+                  _currentPage: { bg: "accent.wash", fontWeight: "semibold" },
                 })}
               >
                 {languageNames[language]}

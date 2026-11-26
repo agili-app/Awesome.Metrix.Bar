@@ -1,4 +1,5 @@
 import { css } from "../../styled-system/css";
+import { textLink } from "../../styled-system/recipes";
 import type { Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
 import type { Dashboard } from "../registry.ts";
@@ -16,7 +17,7 @@ export function DashboardInfo({
 }) {
   return (
     <aside
-      className={css({ layerStyle: "panel", p: "6", minWidth: "0" })}
+      className={css({ layerStyle: "card", p: "6", minWidth: "0" })}
       aria-labelledby="dashboard-details"
     >
       <h2 id="dashboard-details" className={css({ textStyle: "heading", mb: "5" })}>
@@ -26,7 +27,7 @@ export function DashboardInfo({
         className={css({
           display: "grid",
           gap: "2",
-          "& dt": { color: "fg.muted", fontSize: "xs", fontWeight: "semibold" },
+          "& dt": { textStyle: "eyebrow", color: "fg.subtle" },
           "& dd": { mb: "3", fontSize: "sm" },
           "& code": { fontFamily: "mono", fontSize: "xs" },
         })}
@@ -69,18 +70,18 @@ export function DashboardInfo({
             gap: "3",
             pt: "4",
             mt: "2",
-            borderTopWidth: "1px",
+            borderTopWidth: "thin",
             borderColor: "border",
             fontSize: "sm",
           })}
         >
           {homepage && (
-            <a href={homepage}>
+            <a className={textLink()} href={homepage}>
               {m.project_homepage({}, { locale })} <ExternalArrow />
             </a>
           )}
           {dashboard.source && (
-            <a href={dashboard.source}>
+            <a className={textLink()} href={dashboard.source}>
               {m.source_code({}, { locale })} <ExternalArrow />
             </a>
           )}

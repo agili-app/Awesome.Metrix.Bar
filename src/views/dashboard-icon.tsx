@@ -24,7 +24,7 @@ export function DashboardIcon({
           objectFit: "contain",
           bg: "white",
           p: "1.5",
-          borderWidth: "1px",
+          borderWidth: "thin",
           borderColor: "border",
           rounded: "lg",
         }),

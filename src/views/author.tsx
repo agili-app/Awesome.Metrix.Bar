@@ -1,4 +1,5 @@
 import { css, cx } from "../../styled-system/css";
+import { textLink } from "../../styled-system/recipes";
 import { avatarPath } from "../authors.ts";
 
 export function Author({ name }: { name: string }) {
@@ -13,7 +14,6 @@ export function Author({ name }: { name: string }) {
           gap: "1.5",
           minWidth: "0",
           verticalAlign: "middle",
-          "& a": { textDecoration: "none", _hover: { textDecoration: "underline" } },
         }),
       )}
     >
@@ -28,7 +28,12 @@ export function Author({ name }: { name: string }) {
           decoding="async"
         />
       )}
-      <a href={`https://github.com/${encodeURIComponent(name)}`}>{name}</a>
+      <a
+        className={textLink({ tone: "muted" })}
+        href={`https://github.com/${encodeURIComponent(name)}`}
+      >
+        {name}
+      </a>
     </span>
   );
 }

@@ -114,14 +114,14 @@ function PreviewLightbox({
                   href={current.src}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={styles.iconButtonStyle}
+                  className={styles.actionButtonStyle}
                 >
                   {labels.openOriginal}
                   <span aria-hidden="true" className={css({ ml: "1" })}>
                     ↗
                   </span>
                 </a>
-                <DialogClose className={styles.iconButtonStyle} aria-label={labels.close}>
+                <DialogClose className={styles.closeButtonStyle} aria-label={labels.close}>
                   <span aria-hidden="true">✕</span>
                 </DialogClose>
               </div>
