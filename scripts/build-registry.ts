@@ -7,6 +7,7 @@ import { validateSources } from "./config.ts";
 import { download } from "./download.ts";
 import { parseBar } from "./parse-bar.ts";
 import { writeAtomic } from "./files.ts";
+import { buildPreviews } from "./build-previews.ts";
 import { buildStars } from "./build-stars.ts";
 
 const root = resolve(import.meta.dirname, "..");
@@ -14,6 +15,9 @@ const root = resolve(import.meta.dirname, "..");
 export async function buildRegistry(
   input: unknown,
   generated = join(root, ".generated"),
+  previewsDir = generated === join(root, ".generated")
+    ? join(root, "public/previews")
+    : join(generated, "previews"),
 ): Promise<Manifest> {
   const config = validateSources(input);
   const [builder, schema] = await Promise.all([
@@ -66,6 +70,10 @@ export async function buildRegistry(
     dashboards,
   };
   validateRegistry(registry, parsedSchema);
+  const [dashboardPreviews, projectStars] = await Promise.all([
+    buildPreviews(config.dashboards, previewsDir),
+    buildStars(config.dashboards.map(({ repository }) => repository)),
+  ]);
   const index = `${JSON.stringify(registry, null, 2)}\n`;
   const manifest: Manifest = {
     registryURL: new URL(INDEX_PATH, config.registry.origin).href,
@@ -75,7 +83,8 @@ export async function buildRegistry(
     dashboardRepositories: Object.fromEntries(
       config.dashboards.map(({ id, repository }) => [id, repository]),
     ),
-    projectStars: await buildStars(config.dashboards.map(({ repository }) => repository)),
+    dashboardPreviews,
+    projectStars,
   };
   await writeAtomic(join(generated, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   return manifest;
@@ -84,7 +93,11 @@ export async function buildRegistry(
 if (import.meta.main) {
   const config: unknown = JSON.parse(await readFile(join(root, "registry/sources.json"), "utf8"));
   const manifest = await buildRegistry(config);
+  const previewCount = Object.values(manifest.dashboardPreviews).reduce(
+    (sum, items) => sum + items.length,
+    0,
+  );
   console.log(
-    `Built ${manifest.registry.dashboards.length} dashboards and ${Object.keys(manifest.assets).length} immutable resource routes.`,
+    `Built ${manifest.registry.dashboards.length} dashboards, ${Object.keys(manifest.assets).length} immutable resource routes, and ${previewCount} preview images.`,
   );
 }

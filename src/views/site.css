@@ -1,2 +1,8 @@
 @layer ui-sdk;
 @layer reset, base, tokens, recipes, utilities;
+
+@layer ui-sdk {
+  :where([data-slot][hidden]:not([hidden="until-found"])) {
+    display: none !important;
+  }
+}

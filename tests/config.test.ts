@@ -3,8 +3,10 @@ import sources from "../registry/sources.json";
 import { validateSources } from "../scripts/config.ts";
 import type { Source } from "../scripts/config.ts";
 
+const validSources = validateSources(sources);
+
 function source(): Source {
-  return structuredClone(sources.dashboards[0]!);
+  return structuredClone(validSources.dashboards[0]!);
 }
 
 function withReleases(item: Source) {
@@ -86,4 +88,47 @@ describe("source configuration", () => {
       );
     },
   );
+
+  it("allows up to three optional preview URLs and rejects duplicates or excess entries", () => {
+    const makePreview = (index: number) => ({
+      url: `https://example.com/preview-${index}.webp`,
+      alt: `Preview ${index}`,
+    });
+    expect(
+      validateSources(withReleases({ ...source(), previews: [] })).dashboards[0]!.previews,
+    ).toEqual([]);
+    expect(
+      validateSources({
+        ...sources,
+        dashboards: [{ ...source(), previews: ["https://example.com/plain.png", makePreview(2)] }],
+      }).dashboards[0]!.previews,
+    ).toEqual([{ url: "https://example.com/plain.png" }, makePreview(2)]);
+    expect(() =>
+      validateSources(
+        withReleases({ ...source(), previews: [makePreview(1), makePreview(2), makePreview(3)] }),
+      ),
+    ).not.toThrow();
+    expect(() =>
+      validateSources(
+        withReleases({
+          ...source(),
+          previews: [makePreview(1), makePreview(2), makePreview(3), makePreview(4)],
+        }),
+      ),
+    ).toThrow();
+    expect(() =>
+      validateSources(
+        withReleases({
+          ...source(),
+          previews: [makePreview(1), { url: makePreview(1).url, alt: "Duplicate" }],
+        }),
+      ),
+    ).toThrow("Duplicate preview URL");
+    expect(() =>
+      validateSources({
+        ...sources,
+        dashboards: [{ ...source(), previews: ["http://insecure.example/a.png"] }],
+      }),
+    ).toThrow();
+  });
 });

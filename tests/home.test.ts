@@ -154,4 +154,24 @@ describe("catalog and dashboard pages", () => {
     };
     expect(renderCard(dashboard, custom)).toContain('src="/dashboards/icons/pinned"');
   });
+
+  it("renders up to three previews on detail pages and first preview cover on catalog cards", () => {
+    const withThree = manifest.registry.dashboards.find(({ id }) => id === "beszel")!;
+    const card = load(renderCard(withThree, manifest));
+    expect(card(".dashboard-preview-cover img")).toHaveLength(1);
+    expect(card(".dashboard-preview-cover img").attr("src")).toBe(
+      manifest.dashboardPreviews.beszel![0]!.path,
+    );
+    const detail = load(renderDetail(withThree, manifest));
+    expect(detail(".dashboard-previews img")).toHaveLength(3);
+    expect(
+      detail(".dashboard-previews a")
+        .toArray()
+        .map((node) => detail(node).attr("href")),
+    ).toEqual(manifest.dashboardPreviews.beszel!.map(({ path }) => path));
+
+    const withoutPreviews = manifest.registry.dashboards.find(({ id }) => id === "komari")!;
+    expect(load(renderCard(withoutPreviews, manifest))(".dashboard-preview-cover")).toHaveLength(0);
+    expect(load(renderDetail(withoutPreviews, manifest))(".dashboard-previews")).toHaveLength(0);
+  });
 });

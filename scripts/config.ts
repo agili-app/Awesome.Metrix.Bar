@@ -1,6 +1,8 @@
 import { compare, parse } from "semver";
 import { z } from "zod";
 
+export const MAX_PREVIEWS = 3;
+
 const id = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const httpsURL = z.url({ protocol: /^https$/ }).refine((value) => {
   const url = new URL(value);
@@ -20,6 +22,14 @@ const digest = z
   .refine((value) => value === value.toLowerCase(), "SHA-256 must be lowercase");
 const pin = z.strictObject({ url: httpsURL, sha256: digest });
 const tool = pin.omit({ sha256: true });
+const previewObject = z.strictObject({
+  url: httpsURL,
+  alt: z.string().trim().min(1).max(140).optional(),
+});
+const preview = z.union([
+  httpsURL.transform((url): { url: string; alt?: string } => ({ url })),
+  previewObject,
+]);
 const release = z.strictObject({
   commit: z.string().regex(/^[a-f0-9]{40}$/, "Release must pin a full commit"),
   version: z.string().refine(
@@ -43,6 +53,23 @@ const source = z.strictObject({
   path: barPath,
   author: z.string().min(1),
   license: z.string().min(1),
+  previews: z
+    .array(preview)
+    .max(MAX_PREVIEWS)
+    .superRefine((items, ctx) => {
+      const urls = new Set<string>();
+      for (const [index, item] of items.entries()) {
+        if (urls.has(item.url)) {
+          ctx.addIssue({
+            code: "custom",
+            path: [index, "url"],
+            message: "Duplicate preview URL",
+          });
+        }
+        urls.add(item.url);
+      }
+    })
+    .optional(),
   releases: z
     .array(release)
     .min(1)
@@ -86,6 +113,7 @@ const sources = z.strictObject({
 });
 
 export type Pin = z.infer<typeof pin>;
+export type Preview = z.infer<typeof preview>;
 export type Release = z.infer<typeof release>;
 export type Source = z.infer<typeof source>;
 

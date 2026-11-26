@@ -34,6 +34,9 @@ function applyResponseHeaders(context: PageContext) {
     context.header("X-Robots-Tag", "noindex");
   } else if (context.req.path.startsWith("/avatars/")) {
     context.header("Cache-Control", "public, max-age=3600, s-maxage=86400");
+  } else if (context.req.path.startsWith("/previews/")) {
+    context.header("Cache-Control", "public, max-age=3600, s-maxage=86400");
+    context.header("X-Content-Type-Options", "nosniff");
   } else if (context.res.headers.get("Content-Type")?.startsWith("text/html")) {
     context.header("Cache-Control", PAGE_CACHE);
     context.header("X-Content-Type-Options", "nosniff");

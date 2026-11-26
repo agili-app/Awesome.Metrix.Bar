@@ -1,5 +1,9 @@
 import { installLink } from "./metrix.ts";
-import type { Dashboard, Manifest } from "./registry.ts";
+import type { Dashboard, DashboardPreview, Manifest } from "./registry.ts";
+
+export function dashboardPreviews(dashboard: Dashboard, manifest: Manifest): DashboardPreview[] {
+  return manifest.dashboardPreviews[dashboard.id] ?? [];
+}
 
 export function dashboardLinks(dashboard: Dashboard, manifest: Manifest) {
   const name = manifest.dashboardRepositories[dashboard.id];

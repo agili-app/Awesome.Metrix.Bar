@@ -37,7 +37,7 @@ Then open a dashboard's page, follow its setup notes, and choose **Install**. Yo
 | [`beszel`](https://awesome.metrix.bar/dashboards/beszel)             | Beszel server monitoring          |
 | [`tempmail`](https://awesome.metrix.bar/dashboards/tempmail)         | Temporary email inbox             |
 
-Each dashboard page lists its author, version, license, and setup notes. Catalog order uses each repository’s GitHub stars divided by its number of listed dashboards. Badges show total stars and link to the repository.
+Each dashboard page lists its previews (when available), author, version, license, and setup notes. Catalog order uses each repository’s GitHub stars divided by its number of listed dashboards. Badges show total stars and link to the repository.
 
 ## Use with agents
 

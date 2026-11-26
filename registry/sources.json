@@ -76,6 +76,12 @@
       "path": "metrix/pulse.bar",
       "author": "fatwang2",
       "license": "MIT",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/fatwang2/Pulse/ed336062bd521ebfeab7c6031bff5e3e6efbc3f4/metrix/preview.png",
+          "alt": "Pulse stocks and crypto dashboard"
+        }
+      ],
       "releases": [
         {
           "commit": "ed336062bd521ebfeab7c6031bff5e3e6efbc3f4",
@@ -90,6 +96,12 @@
       "path": "codex-resets.bar",
       "author": "0tt0",
       "license": "Apache-2.0",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/0tt0/codex-resets-bar/ffffbab8f6e493a7b642ae7d608f7f9d4113b833/screenshot-en.webp",
+          "alt": "Codex quota reset timers"
+        }
+      ],
       "releases": [
         {
           "commit": "b222f808580fc4de9aa4718b3db0b605648628b1",
@@ -114,6 +126,12 @@
       "path": "dashboards/calendar.bar",
       "author": "JasonChou0v0",
       "license": "UNLICENSED",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/JasonChou0v0/metrix-bar-dashboards/ce8910d754912a81095591b54a20a96f8d91dc96/screenshots/calendar-preview.png",
+          "alt": "Monthly calendar view"
+        }
+      ],
       "releases": [
         {
           "commit": "64e2c1cceea645a190f98f7e7b3057900284bf97",
@@ -133,6 +151,12 @@
       "path": "dashboards/local-ports.bar",
       "author": "JasonChou0v0",
       "license": "UNLICENSED",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/JasonChou0v0/metrix-bar-dashboards/ce8910d754912a81095591b54a20a96f8d91dc96/screenshots/local-ports-preview.png",
+          "alt": "Local listening ports and processes"
+        }
+      ],
       "releases": [
         {
           "commit": "64e2c1cceea645a190f98f7e7b3057900284bf97",
@@ -152,6 +176,12 @@
       "path": "dashboards/stock-board.bar",
       "author": "JasonChou0v0",
       "license": "UNLICENSED",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/JasonChou0v0/metrix-bar-dashboards/ce8910d754912a81095591b54a20a96f8d91dc96/screenshots/stock-board-preview.png",
+          "alt": "Stock quotes and charts"
+        }
+      ],
       "releases": [
         {
           "commit": "64e2c1cceea645a190f98f7e7b3057900284bf97",
@@ -171,6 +201,16 @@
       "path": "stevefans.bar",
       "author": "zxfccmm4",
       "license": "MIT",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/zxfccmm4/stevefans-bar/610ae9085a60c03bb67a2c3804262b77b74ca471/screenshots/stevefans-light.png",
+          "alt": "X follower dashboard in light mode"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/zxfccmm4/stevefans-bar/610ae9085a60c03bb67a2c3804262b77b74ca471/screenshots/stevefans-dark.png",
+          "alt": "X follower dashboard in dark mode"
+        }
+      ],
       "releases": [
         {
           "commit": "610ae9085a60c03bb67a2c3804262b77b74ca471",
@@ -185,6 +225,16 @@
       "path": "magpie/magpie.bar",
       "author": "thedavidweng",
       "license": "AGPL-3.0-only",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/thedavidweng/metrix-bar/b6187119fe614400a34da804b4b972e952f18989/magpie/screenshots/panel-en-light.png",
+          "alt": "Agent models and allowances in light mode"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/thedavidweng/metrix-bar/b6187119fe614400a34da804b4b972e952f18989/magpie/screenshots/panel-en-dark.png",
+          "alt": "Agent models and allowances in dark mode"
+        }
+      ],
       "releases": [
         {
           "commit": "25bc340298cb7a91b900856adca270e437869e0f",
@@ -204,6 +254,20 @@
       "path": "nezha.bar",
       "author": "bluenight91",
       "license": "AGPL-3.0-only",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/bluenight91/nezha-metrix-bar/11191301c910ee690dba563f5d35ff7b6a28f900/assets/servers-light.png",
+          "alt": "Nezha V2 server overview"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/bluenight91/nezha-metrix-bar/11191301c910ee690dba563f5d35ff7b6a28f900/assets/detail.png",
+          "alt": "Nezha V2 server details"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/bluenight91/nezha-metrix-bar/11191301c910ee690dba563f5d35ff7b6a28f900/assets/services.png",
+          "alt": "Nezha V2 service monitors"
+        }
+      ],
       "releases": [
         {
           "commit": "64f4952a1ef1f58d60ccc8c4b04c9b78cbc6b2d3",
@@ -262,6 +326,12 @@
       "path": "dist/TRMNL.bar",
       "author": "miantiao-me",
       "license": "Apache-2.0",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/miantiao-me/TRMNL.Bar/f73cf1d36400c82722a4bc1ac31f2c5ee4479e09/docs/screenshot.png",
+          "alt": "TRMNL virtual screen display"
+        }
+      ],
       "releases": [
         {
           "commit": "f73cf1d36400c82722a4bc1ac31f2c5ee4479e09",
@@ -276,6 +346,12 @@
       "path": "agy-resets.bar",
       "author": "0tt0",
       "license": "Apache-2.0",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/0tt0/agyresets-bar/437404ca3303a06ae8e4705c52614a6090348b49/screenshot-en.webp",
+          "alt": "Antigravity quota reset timers"
+        }
+      ],
       "releases": [
         {
           "commit": "437404ca3303a06ae8e4705c52614a6090348b49",
@@ -290,6 +366,20 @@
       "path": "dist/beszel.bar",
       "author": "miantiao-me",
       "license": "Apache-2.0",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/miantiao-me/beszel.bar/c3ac1102262bc3c074ca6f19fcb99f47075577fc/docs/overview-light.webp",
+          "alt": "Beszel server overview"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/miantiao-me/beszel.bar/c3ac1102262bc3c074ca6f19fcb99f47075577fc/docs/detail-light.webp",
+          "alt": "Beszel host metrics detail"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/miantiao-me/beszel.bar/c3ac1102262bc3c074ca6f19fcb99f47075577fc/docs/alerts-light.webp",
+          "alt": "Beszel alerts view"
+        }
+      ],
       "releases": [
         {
           "commit": "c3ac1102262bc3c074ca6f19fcb99f47075577fc",
@@ -304,6 +394,16 @@
       "path": "dist/tempmail.bar",
       "author": "miantiao-me",
       "license": "Apache-2.0",
+      "previews": [
+        {
+          "url": "https://raw.githubusercontent.com/miantiao-me/tempmail.bar/5afdf0728ca8545e24d68174253a12ce0deb34bd/docs/inbox-light.webp",
+          "alt": "Temporary email inbox"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/miantiao-me/tempmail.bar/5afdf0728ca8545e24d68174253a12ce0deb34bd/docs/empty-light.webp",
+          "alt": "Temporary email ready state"
+        }
+      ],
       "releases": [
         {
           "commit": "5afdf0728ca8545e24d68174253a12ce0deb34bd",

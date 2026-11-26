@@ -1,4 +1,4 @@
-import { dashboardLinks, sortedDashboards } from "../catalog.ts";
+import { dashboardLinks, dashboardPreviews, sortedDashboards } from "../catalog.ts";
 import { baseLocale, dashboardPath, localePath, resolveLocalePath, type Locale } from "../i18n.ts";
 import { registryLink } from "../metrix.ts";
 import * as m from "../paraglide/messages.js";
@@ -20,6 +20,7 @@ export function dashboardMarkdown(
   locale: Locale = baseLocale,
 ): string {
   const links = dashboardLinks(dashboard, manifest);
+  const previews = dashboardPreviews(dashboard, manifest);
   return [
     `# ${escapeMarkdown(dashboard.name)}`,
     dashboard.description && escapeMarkdown(dashboard.description),
@@ -27,6 +28,19 @@ export function dashboardMarkdown(
     ...(["category", "author", "license"] as const).map(
       (key) => dashboard[key] && `- ${key}: ${escapeMarkdown(dashboard[key])}`,
     ),
+    ...(previews.length
+      ? [
+          `## ${m.previews_heading({}, { locale })}`,
+          previews
+            .map((preview, index) => {
+              const alt =
+                preview.alt ??
+                m.preview_alt({ name: dashboard.name, index: index + 1 }, { locale });
+              return `![${escapeMarkdown(alt)}](${siteURL(manifest, preview.path)})`;
+            })
+            .join("\n"),
+        ]
+      : []),
     `[${m.install_in_app({}, { locale })}](${links.install})`,
     `[${m.download_bar({}, { locale })}](${siteURL(manifest, links.download)})`,
     m.install_requirement({}, { locale }),

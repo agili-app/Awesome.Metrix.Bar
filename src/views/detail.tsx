@@ -8,6 +8,7 @@ import type { Dashboard, Manifest } from "../registry.ts";
 import { ActionLink } from "./action-link.tsx";
 import { DashboardIcon } from "./dashboard-icon.tsx";
 import { DashboardInfo } from "./dashboard-info.tsx";
+import { DashboardPreviews } from "./dashboard-previews.tsx";
 import { ExternalArrow } from "./icons.tsx";
 import { Site } from "./site.tsx";
 
@@ -103,6 +104,7 @@ export function DashboardDetail({
             {m.install_requirement({}, { locale })}
           </small>
         </article>
+        <DashboardPreviews dashboard={dashboard} manifest={manifest} locale={locale} />
         <div
           className={css({
             display: "grid",

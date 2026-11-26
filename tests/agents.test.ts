@@ -4,7 +4,7 @@ import manifest from "../.generated/manifest.json";
 import { agentDocuments, SKILL_PATH } from "../src/agents/documents.ts";
 import { agentResponse, prefersMarkdown } from "../src/agents/http.ts";
 import { markdownPage } from "../src/agents/markdown.ts";
-import { dashboardLinks } from "../src/catalog.ts";
+import { dashboardLinks, dashboardPreviews } from "../src/catalog.ts";
 import { dashboardPath, locales, localePath } from "../src/i18n.ts";
 
 const documents = await agentDocuments(manifest);
@@ -83,6 +83,9 @@ describe("Markdown pages", () => {
       expect(page).toContain(dashboard.sha256);
       expect(page).toContain(dashboardLinks(dashboard, manifest).install);
       if (dashboard.docs) expect(page).toContain(dashboard.docs);
+      for (const preview of dashboardPreviews(dashboard, manifest)) {
+        expect(page).toContain(preview.path);
+      }
     }
   });
 
