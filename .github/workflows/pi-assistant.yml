@@ -33,6 +33,7 @@ env:
 jobs:
   check:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       pull-requests: read
     outputs:
@@ -119,11 +120,10 @@ jobs:
         if: steps.pi.outputs.success == 'false'
         run: exit 1
   approve-ci:
-    needs: [check, assist]
-    if: >-
-      always() && !cancelled() && needs.check.result == 'success'
-      && (needs.assist.result == 'success' || needs.assist.result == 'skipped')
+    needs: assist
+    if: needs.assist.result == 'success'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       actions: write
       contents: read
@@ -154,6 +154,7 @@ jobs:
       && github.event.pull_request.head.repo.full_name == github.repository
       && startsWith(github.event.pull_request.head.ref, 'automation/pi/')
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       issues: write
     steps:
