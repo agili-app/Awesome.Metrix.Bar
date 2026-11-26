@@ -411,6 +411,20 @@
           "sha256": "0be15f1e67f6e900f948838b0266ae70dfd4bbd9d99afc12f1f9ac445e0cc629"
         }
       ]
+    },
+    {
+      "id": "precious-metals",
+      "repository": "qazxue1051289/precious-metals-bar",
+      "path": "precious-metals.bar",
+      "author": "qazxue1051289",
+      "license": "MIT",
+      "releases": [
+        {
+          "commit": "896506dfbeaf2cd6a8d1606e54187e6a02930282",
+          "version": "1.0.4",
+          "sha256": "ca0dfdc4e6a742710a7342952a9a497fc4971e1018c3ecb14b4f9a171281ed51"
+        }
+      ]
     }
   ]
 }

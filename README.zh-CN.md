@@ -18,24 +18,25 @@ https://awesome.metrix.bar/dashboards/index.json
 
 ## 看板
 
-| 看板                                                                 | 用途                    |
-| -------------------------------------------------------------------- | ----------------------- |
-| [`komari`](https://awesome.metrix.bar/dashboards/komari)             | 服务器监控              |
-| [`tokens`](https://awesome.metrix.bar/dashboards/tokens)             | AI 编程用量             |
-| [`tungshing`](https://awesome.metrix.bar/dashboards/tungshing)       | 农历黄历                |
-| [`pulse`](https://awesome.metrix.bar/dashboards/pulse)               | 股票与加密货币          |
-| [`codex-resets`](https://awesome.metrix.bar/dashboards/codex-resets) | Codex 额度重置          |
-| [`calendar`](https://awesome.metrix.bar/dashboards/calendar)         | 月历                    |
-| [`local-ports`](https://awesome.metrix.bar/dashboards/local-ports)   | 本机端口与进程（macOS） |
-| [`stock-board`](https://awesome.metrix.bar/dashboards/stock-board)   | 股票报价与走势          |
-| [`stevefans`](https://awesome.metrix.bar/dashboards/stevefans)       | X 粉丝数                |
-| [`magpie`](https://awesome.metrix.bar/dashboards/magpie)             | Agent 模型与额度        |
-| [`nezha`](https://awesome.metrix.bar/dashboards/nezha)               | 哪吒 V2 监控            |
-| [`antigravity`](https://awesome.metrix.bar/dashboards/antigravity)   | Antigravity CLI 账号    |
-| [`trmnl-bar`](https://awesome.metrix.bar/dashboards/trmnl-bar)       | TRMNL 屏幕与镜像设备    |
-| [`agy-resets`](https://awesome.metrix.bar/dashboards/agy-resets)     | Antigravity 额度重置    |
-| [`beszel`](https://awesome.metrix.bar/dashboards/beszel)             | Beszel 服务器监控       |
-| [`tempmail`](https://awesome.metrix.bar/dashboards/tempmail)         | 临时邮箱与验证码        |
+| 看板                                                                       | 用途                    |
+| -------------------------------------------------------------------------- | ----------------------- |
+| [`komari`](https://awesome.metrix.bar/dashboards/komari)                   | 服务器监控              |
+| [`tokens`](https://awesome.metrix.bar/dashboards/tokens)                   | AI 编程用量             |
+| [`tungshing`](https://awesome.metrix.bar/dashboards/tungshing)             | 农历黄历                |
+| [`pulse`](https://awesome.metrix.bar/dashboards/pulse)                     | 股票与加密货币          |
+| [`codex-resets`](https://awesome.metrix.bar/dashboards/codex-resets)       | Codex 额度重置          |
+| [`calendar`](https://awesome.metrix.bar/dashboards/calendar)               | 月历                    |
+| [`local-ports`](https://awesome.metrix.bar/dashboards/local-ports)         | 本机端口与进程（macOS） |
+| [`stock-board`](https://awesome.metrix.bar/dashboards/stock-board)         | 股票报价与走势          |
+| [`stevefans`](https://awesome.metrix.bar/dashboards/stevefans)             | X 粉丝数                |
+| [`magpie`](https://awesome.metrix.bar/dashboards/magpie)                   | Agent 模型与额度        |
+| [`nezha`](https://awesome.metrix.bar/dashboards/nezha)                     | 哪吒 V2 监控            |
+| [`antigravity`](https://awesome.metrix.bar/dashboards/antigravity)         | Antigravity CLI 账号    |
+| [`trmnl-bar`](https://awesome.metrix.bar/dashboards/trmnl-bar)             | TRMNL 屏幕与镜像设备    |
+| [`agy-resets`](https://awesome.metrix.bar/dashboards/agy-resets)           | Antigravity 额度重置    |
+| [`beszel`](https://awesome.metrix.bar/dashboards/beszel)                   | Beszel 服务器监控       |
+| [`tempmail`](https://awesome.metrix.bar/dashboards/tempmail)               | 临时邮箱与验证码        |
+| [`precious-metals`](https://awesome.metrix.bar/dashboards/precious-metals) | 贵金属行情              |
 
 每个看板页面还列出界面预览（如有）、作者、版本、许可证和配置说明。目录按仓库 Star 数除以本站收录的看板数降序排列。徽章显示 Star 总数，并链接到仓库。
 
