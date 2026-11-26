@@ -109,20 +109,6 @@
       ]
     },
     {
-      "id": "codex-resets-en",
-      "repository": "0tt0/codex-resets-bar",
-      "path": "codex-resets-en.bar",
-      "author": "0tt0",
-      "license": "Apache-2.0",
-      "releases": [
-        {
-          "commit": "b222f808580fc4de9aa4718b3db0b605648628b1",
-          "version": "0.1.4",
-          "sha256": "85a45e9a0aefd0970abde97604c66049f30784815a85c72614cb6876d83b97c1"
-        }
-      ]
-    },
-    {
       "id": "calendar",
       "repository": "JasonChou0v0/metrix-bar-dashboards",
       "path": "dashboards/calendar.bar",

@@ -18,25 +18,24 @@ Then open a dashboard's page, follow its setup notes, and choose **Install**. Yo
 
 ## Dashboards
 
-| Dashboard                                                                  | Use it for                        |
-| -------------------------------------------------------------------------- | --------------------------------- |
-| [`komari`](https://awesome.metrix.bar/dashboards/komari)                   | Server monitoring                 |
-| [`tokens`](https://awesome.metrix.bar/dashboards/tokens)                   | AI coding usage                   |
-| [`tungshing`](https://awesome.metrix.bar/dashboards/tungshing)             | Chinese lunar almanac             |
-| [`pulse`](https://awesome.metrix.bar/dashboards/pulse)                     | Stocks and cryptocurrency         |
-| [`codex-resets`](https://awesome.metrix.bar/dashboards/codex-resets)       | Codex quota resets (Chinese)      |
-| [`codex-resets-en`](https://awesome.metrix.bar/dashboards/codex-resets-en) | Codex quota resets (English)      |
-| [`calendar`](https://awesome.metrix.bar/dashboards/calendar)               | Monthly calendar                  |
-| [`local-ports`](https://awesome.metrix.bar/dashboards/local-ports)         | Local ports and processes (macOS) |
-| [`stock-board`](https://awesome.metrix.bar/dashboards/stock-board)         | Stock quotes and charts           |
-| [`stevefans`](https://awesome.metrix.bar/dashboards/stevefans)             | X followers                       |
-| [`magpie`](https://awesome.metrix.bar/dashboards/magpie)                   | Agent models and allowances       |
-| [`nezha`](https://awesome.metrix.bar/dashboards/nezha)                     | Nezha V2 monitoring               |
-| [`antigravity`](https://awesome.metrix.bar/dashboards/antigravity)         | Antigravity CLI accounts          |
-| [`trmnl-bar`](https://awesome.metrix.bar/dashboards/trmnl-bar)             | TRMNL screens and devices         |
-| [`agy-resets`](https://awesome.metrix.bar/dashboards/agy-resets)           | Antigravity quota resets          |
-| [`beszel`](https://awesome.metrix.bar/dashboards/beszel)                   | Beszel server monitoring          |
-| [`tempmail`](https://awesome.metrix.bar/dashboards/tempmail)               | Temporary email inbox             |
+| Dashboard                                                            | Use it for                        |
+| -------------------------------------------------------------------- | --------------------------------- |
+| [`komari`](https://awesome.metrix.bar/dashboards/komari)             | Server monitoring                 |
+| [`tokens`](https://awesome.metrix.bar/dashboards/tokens)             | AI coding usage                   |
+| [`tungshing`](https://awesome.metrix.bar/dashboards/tungshing)       | Chinese lunar almanac             |
+| [`pulse`](https://awesome.metrix.bar/dashboards/pulse)               | Stocks and cryptocurrency         |
+| [`codex-resets`](https://awesome.metrix.bar/dashboards/codex-resets) | Codex quota resets                |
+| [`calendar`](https://awesome.metrix.bar/dashboards/calendar)         | Monthly calendar                  |
+| [`local-ports`](https://awesome.metrix.bar/dashboards/local-ports)   | Local ports and processes (macOS) |
+| [`stock-board`](https://awesome.metrix.bar/dashboards/stock-board)   | Stock quotes and charts           |
+| [`stevefans`](https://awesome.metrix.bar/dashboards/stevefans)       | X followers                       |
+| [`magpie`](https://awesome.metrix.bar/dashboards/magpie)             | Agent models and allowances       |
+| [`nezha`](https://awesome.metrix.bar/dashboards/nezha)               | Nezha V2 monitoring               |
+| [`antigravity`](https://awesome.metrix.bar/dashboards/antigravity)   | Antigravity CLI accounts          |
+| [`trmnl-bar`](https://awesome.metrix.bar/dashboards/trmnl-bar)       | TRMNL screens and devices         |
+| [`agy-resets`](https://awesome.metrix.bar/dashboards/agy-resets)     | Antigravity quota resets          |
+| [`beszel`](https://awesome.metrix.bar/dashboards/beszel)             | Beszel server monitoring          |
+| [`tempmail`](https://awesome.metrix.bar/dashboards/tempmail)         | Temporary email inbox             |
 
 Each dashboard page lists its author, version, license, and setup notes. Catalog order uses each repository’s GitHub stars divided by its number of listed dashboards. Badges show total stars and link to the repository.
 
