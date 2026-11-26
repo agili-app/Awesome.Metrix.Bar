@@ -7,6 +7,17 @@ import { writeAtomic } from "./files.ts";
 
 export const cacheDir = resolve(import.meta.dirname, "../.cache");
 
+export class DownloadError extends Error {
+  readonly status: number;
+  readonly url: string;
+
+  constructor(status: number, url: string) {
+    super(`Download failed (${status}): ${url}`);
+    this.status = status;
+    this.url = url;
+  }
+}
+
 export async function download(
   { url, sha256: expected }: Pick<Pin, "url"> & Partial<Pin>,
   extension: string,
@@ -23,7 +34,7 @@ export async function download(
       redirect: "error",
       signal: AbortSignal.timeout(30_000),
     });
-    if (response.status !== 200) throw new Error(`Download failed (${response.status}): ${url}`);
+    if (response.status !== 200) throw new DownloadError(response.status, url);
     bytes = Buffer.from(await response.arrayBuffer());
   }
   const hash = sha256(bytes);

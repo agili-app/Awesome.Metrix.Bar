@@ -5,7 +5,7 @@ import { z } from "zod";
 import { parseBar } from "./parse-bar.ts";
 import { validateSources } from "./config.ts";
 import type { Release } from "./config.ts";
-import { cacheDir, download } from "./download.ts";
+import { cacheDir, download, DownloadError } from "./download.ts";
 import { writeAtomic } from "./files.ts";
 import { get } from "./http.ts";
 import { completeEntry, sha256, sourceURL, validateRegistry } from "./registry.ts";
@@ -14,7 +14,7 @@ async function request(url: string, token?: string) {
   const response = await get(new URL(url), {
     headers: token ? { authorization: `Bearer ${token}` } : undefined,
   });
-  if (response.status !== 200) throw new Error(`Download failed (${response.status}): ${url}`);
+  if (response.status !== 200) throw new DownloadError(response.status, url);
   return response;
 }
 
@@ -40,8 +40,18 @@ export async function updateDashboards(input: unknown) {
     try {
       const previous = source.releases.at(-1)!;
       if (!heads.has(source.repository)) heads.set(source.repository, head(source.repository));
-      const commit = (await heads.get(source.repository))!;
-      const { bytes } = await download({ url: sourceURL(source, { commit }) }, "bar");
+      let commit: string;
+      let bytes: Buffer;
+      try {
+        commit = (await heads.get(source.repository))!;
+        ({ bytes } = await download({ url: sourceURL(source, { commit }) }, "bar"));
+      } catch (error) {
+        if (error instanceof DownloadError && error.status === 404) {
+          console.warn(`${source.id}: skipped (${error.message})`);
+          continue;
+        }
+        throw error;
+      }
       const hash = sha256(bytes);
       if (hash === previous.sha256) continue;
       const entry = await parseBar(builder.path, bytes, source.path, source.id);
