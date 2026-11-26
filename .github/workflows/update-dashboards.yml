@@ -6,7 +6,9 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: write
   contents: write
+  pull-requests: read
 
 env:
   GIT_AUTHOR_NAME: Agili
@@ -40,6 +42,7 @@ jobs:
       - name: Publish updates
         env:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          GH_REPO: ${{ github.repository }}
         run: |
           git diff --check
           git diff --quiet -- registry/sources.json && exit 0
@@ -49,6 +52,11 @@ jobs:
           git add registry/sources.json
           git commit -m "chore: update dashboards"
           git push origin "HEAD:$DEFAULT_BRANCH"
+          # GITHUB_TOKEN pushes do not emit push events; dispatch assistant conflict checks only when open assistant PRs exist.
+          prs=$(gh api --method GET "repos/$GH_REPO/pulls" -f state=open -f base="$DEFAULT_BRANCH" -F per_page=100 --paginate --jq '.[] | select(.head.repo.full_name == env.GH_REPO and (.head.ref | startswith("automation/pi/"))) | .number')
+          for number in $prs; do
+            gh workflow run pi-assistant.yml --ref "$DEFAULT_BRANCH" -f issue="$number"
+          done
       - name: Check update result
         if: steps.update.outcome == 'failure'
         run: exit 1
