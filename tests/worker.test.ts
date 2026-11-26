@@ -18,6 +18,7 @@ const manifest: Manifest = {
   },
   indexETag: '"index-digest"',
   dashboardRepositories: {},
+  dashboardPreviews: {},
   projectStars: {},
   assets: {
     [path]: {

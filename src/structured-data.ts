@@ -1,4 +1,4 @@
-import { sortedDashboards } from "./catalog.ts";
+import { dashboardPreviews, sortedDashboards } from "./catalog.ts";
 import { dashboardPath, locales, localePath, type Locale } from "./i18n.ts";
 import * as m from "./paraglide/messages.js";
 import { siteURL, type Dashboard, type Manifest } from "./registry.ts";
@@ -59,6 +59,9 @@ export function dashboardStructuredData(
   const url = siteURL(manifest, dashboardPath(dashboard.id, locale));
   const application = `${siteURL(manifest, path)}#dashboard`;
   const breadcrumb = `${url}#breadcrumb`;
+  const screenshots = dashboardPreviews(dashboard, manifest).map((preview) =>
+    siteURL(manifest, preview.path),
+  );
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -73,6 +76,7 @@ export function dashboardStructuredData(
         softwareRequirements: "Metrix.Bar",
         applicationCategory: dashboard.category,
         downloadUrl: new URL(dashboard.file, manifest.registryURL).href,
+        screenshot: screenshots.length ? screenshots : undefined,
         author: dashboard.author
           ? {
               "@type": "Person",

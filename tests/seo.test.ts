@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { sortedDashboards } from "../src/catalog.ts";
+import { dashboardPreviews, sortedDashboards } from "../src/catalog.ts";
 import manifest from "../.generated/manifest.json";
 import { dashboardPath, locales, localePath } from "../src/i18n.ts";
 import type { Dashboard } from "../src/registry.ts";
@@ -59,6 +59,27 @@ describe("search metadata", () => {
       expect(app.mainEntityOfPage).toEqual({ "@id": page["@id"] });
       expect(app).not.toHaveProperty("aggregateRating");
       expect(app).not.toHaveProperty("offers");
+      const previews = dashboardPreviews(dashboard, manifest);
+      if (previews.length) {
+        const first = previews[0]!;
+        expect(head.meta).toContainEqual({
+          property: "og:image",
+          content: siteURL(manifest, first.path),
+        });
+        expect(head.meta).toContainEqual({
+          property: "og:image:width",
+          content: String(first.width),
+        });
+        expect(head.meta).toContainEqual({
+          property: "og:image:height",
+          content: String(first.height),
+        });
+        expect(head.meta).toContainEqual({ name: "twitter:card", content: "summary_large_image" });
+        expect(app.screenshot).toEqual(previews.map((preview) => siteURL(manifest, preview.path)));
+      } else {
+        expect(head.meta).toContainEqual({ name: "twitter:card", content: "summary" });
+        expect(app).not.toHaveProperty("screenshot");
+      }
     }
     expect(titles.size).toBe(manifest.registry.dashboards.length);
   });

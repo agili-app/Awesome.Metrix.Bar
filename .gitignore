@@ -9,6 +9,7 @@ src/paraglide/
 project.inlang/cache/
 project.inlang/.gitignore
 public/avatars/
+public/previews/
 dist/
 .wrangler/
 .vite/

@@ -37,7 +37,7 @@ https://awesome.metrix.bar/dashboards/index.json
 | [`beszel`](https://awesome.metrix.bar/dashboards/beszel)             | Beszel 服务器监控       |
 | [`tempmail`](https://awesome.metrix.bar/dashboards/tempmail)         | 临时邮箱与验证码        |
 
-每个看板页面还列出作者、版本、许可证和配置说明。目录按仓库 Star 数除以本站收录的看板数降序排列。徽章显示 Star 总数，并链接到仓库。
+每个看板页面还列出界面预览（如有）、作者、版本、许可证和配置说明。目录按仓库 Star 数除以本站收录的看板数降序排列。徽章显示 Star 总数，并链接到仓库。
 
 ## 通过 Agent 使用
 

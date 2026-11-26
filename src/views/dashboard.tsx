@@ -8,6 +8,7 @@ import type { Dashboard, Manifest } from "../registry.ts";
 import { ActionLink } from "./action-link.tsx";
 import { Author } from "./author.tsx";
 import { DashboardIcon } from "./dashboard-icon.tsx";
+import { DashboardPreviewCover } from "./dashboard-previews.tsx";
 import { ExternalArrow } from "./icons.tsx";
 import { ProjectStars } from "./project-stars.tsx";
 
@@ -93,6 +94,7 @@ export function DashboardCard({
       <p className={css({ color: "fg.muted", fontSize: "sm", whiteSpace: "pre-line" })}>
         {dashboard.description ?? m.fallback_description({}, { locale })}
       </p>
+      <DashboardPreviewCover dashboard={dashboard} manifest={manifest} href={detailHref} />
       {dashboard.category && (
         <small
           className={css({

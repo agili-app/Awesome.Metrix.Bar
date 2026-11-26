@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import type { CheerioAPI } from "cheerio";
 import { avatarPath } from "../src/authors.ts";
-import { sortedDashboards } from "../src/catalog.ts";
+import { dashboardPreviews, sortedDashboards } from "../src/catalog.ts";
 import { dashboardPath, locales, localePath, type Locale } from "../src/i18n.ts";
 import { installLink, registryLink } from "../src/metrix.ts";
 import * as m from "../src/paraglide/messages.js";
@@ -80,5 +80,24 @@ export async function verifyCatalog(
         card.find(`img[src="${avatar}"]`).length && page(`img[src="${avatar}"]`).length,
         `${dashboard.id}: missing author avatar`,
       );
+    const previews = dashboardPreviews(dashboard, manifest);
+    if (previews.length) {
+      assert.equal(
+        card.find(`.dashboard-preview-cover img[src="${previews[0]!.path}"]`).length,
+        1,
+        `${dashboard.id}: missing catalog preview cover`,
+      );
+      const rendered = page(".dashboard-previews img")
+        .toArray()
+        .map((node) => page(node).attr("src"));
+      assert.deepEqual(
+        rendered,
+        previews.map(({ path }) => path),
+        `${dashboard.id}: unexpected detail previews`,
+      );
+    } else {
+      assert.equal(card.find(".dashboard-preview-cover").length, 0);
+      assert.equal(page(".dashboard-previews").length, 0);
+    }
   });
 }

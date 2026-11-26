@@ -3,8 +3,10 @@ import sources from "../registry/sources.json";
 import { validateSources } from "../scripts/config.ts";
 import type { Source } from "../scripts/config.ts";
 
+const validSources = validateSources(sources);
+
 function source(): Source {
-  return structuredClone(sources.dashboards[0]!);
+  return structuredClone(validSources.dashboards[0]!);
 }
 
 function withReleases(item: Source) {
@@ -86,4 +88,54 @@ describe("source configuration", () => {
       );
     },
   );
+
+  it("allows up to three unique raster previews and rejects invalid preview lists", () => {
+    const makePreview = (index: number) => ({
+      url: `https://example.com/preview-${index}.webp`,
+      sha256: String(index).repeat(64),
+      contentType: "image/webp" as const,
+      alt: `Preview ${index}`,
+    });
+    expect(() =>
+      validateSources(
+        withReleases({ ...source(), previews: [makePreview(1), makePreview(2), makePreview(3)] }),
+      ),
+    ).not.toThrow();
+    expect(() => validateSources(withReleases({ ...source(), previews: [] }))).toThrow();
+    expect(() =>
+      validateSources(
+        withReleases({
+          ...source(),
+          previews: [makePreview(1), makePreview(2), makePreview(3), makePreview(4)],
+        }),
+      ),
+    ).toThrow();
+    expect(() =>
+      validateSources(
+        withReleases({
+          ...source(),
+          previews: [makePreview(1), { ...makePreview(2), url: makePreview(1).url }],
+        }),
+      ),
+    ).toThrow("Duplicate preview URL");
+    expect(() =>
+      validateSources(
+        withReleases({
+          ...source(),
+          previews: [makePreview(1), { ...makePreview(2), sha256: makePreview(1).sha256 }],
+        }),
+      ),
+    ).toThrow("Duplicate preview image");
+    expect(() =>
+      validateSources({
+        ...sources,
+        dashboards: [
+          {
+            ...source(),
+            previews: [{ ...makePreview(1), contentType: "image/svg+xml" }],
+          },
+        ],
+      }),
+    ).toThrow();
+  });
 });

@@ -38,11 +38,20 @@ export interface Asset {
   contentType: string;
 }
 
+export interface DashboardPreview {
+  path: string;
+  width: number;
+  height: number;
+  contentType: string;
+  alt?: string;
+}
+
 export interface Manifest {
   registryURL: string;
   registry: Registry;
   indexETag: string;
   assets: Record<string, Asset>;
   dashboardRepositories: Record<string, string>;
+  dashboardPreviews: Record<string, DashboardPreview[]>;
   projectStars: Record<string, number | null>;
 }
