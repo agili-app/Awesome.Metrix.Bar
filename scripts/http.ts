@@ -8,13 +8,13 @@ export function get(url: URL, init?: RequestInit): Promise<Response> {
   return fetch(url, { ...init, redirect: "error", signal: AbortSignal.timeout(30_000) });
 }
 
-export async function runConcurrently<T>(
+export async function runConcurrently<T, R = void>(
   items: readonly T[],
   concurrency: number,
-  worker: (item: T) => Promise<void>,
-): Promise<void> {
+  worker: (item: T) => Promise<R>,
+): Promise<R[]> {
   const limit = pLimit(concurrency);
-  await Promise.all(items.map((item) => limit(() => worker(item))));
+  return Promise.all(items.map((item) => limit(() => worker(item))));
 }
 
 export async function verifyCache(url: URL, hash: string, init?: RequestInit): Promise<void> {

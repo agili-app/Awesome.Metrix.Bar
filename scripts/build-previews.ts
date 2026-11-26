@@ -1,57 +1,27 @@
-import { existsSync } from "node:fs";
-import { readdir, readFile, rm, stat } from "node:fs/promises";
+import { readdir, rm } from "node:fs/promises";
 import { join, resolve } from "node:path";
-import pLimit from "p-limit";
-import type { DashboardPreview } from "../src/registry.ts";
-import type { Preview, Source } from "./config.ts";
+import type { DashboardPreview, Manifest } from "../src/registry.ts";
+import { cachedBinaryFile } from "./binary-cache.ts";
+import type { Source } from "./config.ts";
 import { writeAtomic } from "./files.ts";
+import { runConcurrently } from "./http.ts";
 import { detectPreviewImage } from "./image.ts";
 
 const root = resolve(import.meta.dirname, "..");
-const maxAge = 86_400_000;
-const maxBytes = 5 * 1024 * 1024;
+const MAX_PREVIEW_BYTES = 5 * 1024 * 1024;
 
-function cacheFileName(url: string): string {
-  return `${Buffer.from(url).toString("base64url")}.img`;
-}
-
-async function fetchPreview(url: string, fetchUpstream: typeof fetch): Promise<Buffer> {
+async function fetchPreview(url: string, fetchUpstream: typeof fetch): Promise<Uint8Array> {
   const response = await fetchUpstream(url, {
     redirect: "follow",
     signal: AbortSignal.timeout(15_000),
   });
   if (response.status !== 200) throw new Error(`Preview download failed (${response.status})`);
-  const bytes = Buffer.from(await response.arrayBuffer());
-  if (!bytes.byteLength || bytes.byteLength > maxBytes) {
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  if (!bytes.byteLength || bytes.byteLength > MAX_PREVIEW_BYTES) {
     throw new Error(`Invalid preview size (${bytes.byteLength} bytes)`);
   }
+  detectPreviewImage(bytes);
   return bytes;
-}
-
-async function loadPreview(
-  preview: Preview,
-  cacheDir: string,
-  fetchUpstream: typeof fetch,
-  now: number,
-): Promise<Buffer | undefined> {
-  const path = join(cacheDir, cacheFileName(preview.url));
-  const cached = existsSync(path) ? await readFile(path) : undefined;
-  if (cached?.byteLength && now - (await stat(path)).mtimeMs < maxAge) {
-    return cached;
-  }
-  try {
-    const bytes = await fetchPreview(preview.url, fetchUpstream);
-    detectPreviewImage(bytes);
-    await writeAtomic(path, bytes);
-    return bytes;
-  } catch (error) {
-    if (cached?.byteLength) {
-      console.warn(`Preview refresh failed; using cached ${preview.url}.`, error);
-      return cached;
-    }
-    console.warn(`Skipping unavailable preview ${preview.url}.`, error);
-    return undefined;
-  }
 }
 
 export async function buildPreviews(
@@ -60,40 +30,41 @@ export async function buildPreviews(
   cacheDir = join(root, ".cache/previews"),
   fetchUpstream: typeof fetch = fetch,
   now = Date.now(),
-): Promise<Record<string, DashboardPreview[]>> {
-  const files = new Map<string, Buffer>();
-  const previewsByDashboard: Record<string, DashboardPreview[]> = {};
+): Promise<Manifest["dashboardPreviews"]> {
   const tasks = sources.flatMap((source) =>
     (source.previews ?? []).map((preview, index) => ({ id: source.id, index, preview })),
   );
-  const limit = pLimit(6);
-  const results = await Promise.all(
-    tasks.map(({ id, index, preview }) =>
-      limit(async () => {
-        const bytes = await loadPreview(preview, cacheDir, fetchUpstream, now);
-        if (!bytes) return undefined;
-        try {
-          const image = detectPreviewImage(bytes);
-          const filename = `${id}-${index + 1}.${image.extension}`;
-          return {
-            id,
-            filename,
-            bytes,
-            entry: {
-              path: `/previews/${filename}`,
-              width: image.width,
-              height: image.height,
-              contentType: image.contentType,
-              ...(preview.alt ? { alt: preview.alt } : {}),
-            } satisfies DashboardPreview,
-          };
-        } catch (error) {
-          console.warn(`Skipping invalid preview ${preview.url}.`, error);
-          return undefined;
-        }
-      }),
-    ),
-  );
+  const results = await runConcurrently(tasks, 6, async ({ id, index, preview }) => {
+    const bytes = await cachedBinaryFile({
+      path: join(cacheDir, `${Buffer.from(preview.url).toString("base64url")}.img`),
+      now,
+      fetchBytes: () => fetchPreview(preview.url, fetchUpstream),
+      label: preview.url,
+      required: false,
+    });
+    if (!bytes) return undefined;
+    try {
+      const image = detectPreviewImage(bytes);
+      const filename = `${id}-${index + 1}.${image.extension}`;
+      return {
+        id,
+        filename,
+        bytes,
+        entry: {
+          path: `/previews/${filename}`,
+          width: image.width,
+          height: image.height,
+          contentType: image.contentType,
+          ...(preview.alt ? { alt: preview.alt } : {}),
+        } satisfies DashboardPreview,
+      };
+    } catch (error) {
+      console.warn(`Skipping invalid cached preview ${preview.url}.`, error);
+      return undefined;
+    }
+  });
+  const files = new Map<string, Uint8Array>();
+  const previewsByDashboard: Manifest["dashboardPreviews"] = {};
   for (const result of results) {
     if (!result) continue;
     files.set(result.filename, result.bytes);

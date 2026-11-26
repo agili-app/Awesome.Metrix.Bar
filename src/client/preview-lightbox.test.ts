@@ -5,6 +5,7 @@ import manifest from "../../.generated/manifest.json";
 import { DashboardDetail } from "../views/detail.tsx";
 import { Home } from "../views/home.tsx";
 import { enablePreviewLightbox } from "./preview-lightbox.tsx";
+import { bindPreviewTriggers } from "./preview-triggers.ts";
 
 describe("preview lightbox", () => {
   afterEach(() => {
@@ -105,6 +106,22 @@ describe("preview lightbox", () => {
       await act(async () => {
         dispose();
       });
+    }
+  });
+
+  it("warms the lightbox chunk once on focus or pointer intent", () => {
+    document.body.innerHTML = renderToString(createElement(Home, { manifest }));
+    const onOpen = vi.fn();
+    const onIntent = vi.fn();
+    const unbind = bindPreviewTriggers(onOpen, onIntent);
+    try {
+      const cover = document.querySelector<HTMLAnchorElement>('a[data-preview-gallery="Beszel"]')!;
+      cover.dispatchEvent(new FocusEvent("focusin", { bubbles: true }));
+      cover.dispatchEvent(new MouseEvent("pointerover", { bubbles: true }));
+      expect(onIntent).toHaveBeenCalledTimes(1);
+      expect(onOpen).not.toHaveBeenCalled();
+    } finally {
+      unbind();
     }
   });
 });

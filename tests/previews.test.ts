@@ -37,18 +37,25 @@ function makeGif(width: number, height: number): Buffer {
 }
 
 function makeJpeg(width: number, height: number): Buffer {
-  const buf = Buffer.alloc(14);
+  // Minimal valid JPEG: SOI + empty APP0 + 1-component SOF0 + EOI.
+  const buf = Buffer.alloc(21);
   buf[0] = 0xff;
   buf[1] = 0xd8;
   buf[2] = 0xff;
-  buf[3] = 0xc0;
-  buf.writeUInt16BE(8, 4);
-  buf[6] = 8;
-  buf.writeUInt16BE(height, 7);
-  buf.writeUInt16BE(width, 9);
-  buf[11] = 3;
-  buf[12] = 0xff;
-  buf[13] = 0xd9;
+  buf[3] = 0xe0;
+  buf.writeUInt16BE(2, 4);
+  buf[6] = 0xff;
+  buf[7] = 0xc0;
+  buf.writeUInt16BE(11, 8);
+  buf[10] = 8;
+  buf.writeUInt16BE(height, 11);
+  buf.writeUInt16BE(width, 13);
+  buf[15] = 1;
+  buf[16] = 1;
+  buf[17] = 0x11;
+  buf[18] = 0;
+  buf[19] = 0xff;
+  buf[20] = 0xd9;
   return buf;
 }
 

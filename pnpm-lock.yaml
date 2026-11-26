@@ -241,6 +241,9 @@ importers:
       cheerio:
         specifier: ^1.2.0
         version: 1.2.0
+      image-size:
+        specifier: ^2.1.0
+        version: 2.1.0
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0(@noble/hashes@2.4.0)(supports-color@10.2.2)
@@ -3122,6 +3125,11 @@ packages:
     resolution: {integrity: sha512-wCBiZ77u1tuWde6G/nfOtLaCTYcFDU5yCzARzK10y+rLhzYoL7a7yEemcopcc2Mzow7gZOIjnV2ym1NYmdiJOQ==}
     engines: {node: '>= 4'}
 
+  image-size@2.1.0:
+    resolution: {integrity: sha512-6Dbisa46RsgeAh3TMSFL2i8+uIFG+/LRmz6Q2oscSJJvXo1sOw3EgNO4M8jPl1P+gR1atJLDPrpclX4IHz63sA==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   is-extendable@0.1.1:
     resolution: {integrity: sha512-5BMULNob1vgFX6EjQw5izWDxrecWK9AM72rugNr0TFldMOi0fj6Jk+zeKIt0xGj4cEfQIJth4w3OKWOJ4f+AFw==}
     engines: {node: '>=0.10.0'}
@@ -5928,6 +5936,8 @@ snapshots:
       safer-buffer: 2.1.2
 
   ignore@7.0.14: {}
+
+  image-size@2.1.0: {}
 
   is-extendable@0.1.1: {}
 
