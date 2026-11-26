@@ -8,6 +8,7 @@ import * as m from "../src/paraglide/messages.js";
 import type { Manifest } from "../src/registry.ts";
 import { dashboardHead, homeHead } from "../src/seo.ts";
 import { verifyDashboard } from "./html.ts";
+import { runConcurrently } from "./http.ts";
 import type { createPageVerifier } from "./verify-page.ts";
 
 function verifyLanguages(page: CheerioAPI, path: string, locale: Locale): void {
@@ -44,7 +45,7 @@ export async function verifyCatalog(
     sortedDashboards(manifest).map(({ id }) => dashboardPath(id, locale)),
     "Catalog cards must follow weighted project stars",
   );
-  for (const dashboard of manifest.registry.dashboards) {
+  await runConcurrently(manifest.registry.dashboards, 6, async (dashboard) => {
     const path = dashboardPath(dashboard.id, locale);
     const install = `a[href="${installLink(dashboard.id, manifest.registryURL)}"]`;
     const card = cards.filter((_, element) => home(element).find("h3 a").attr("href") === path);
@@ -79,5 +80,5 @@ export async function verifyCatalog(
         card.find(`img[src="${avatar}"]`).length && page(`img[src="${avatar}"]`).length,
         `${dashboard.id}: missing author avatar`,
       );
-  }
+  });
 }

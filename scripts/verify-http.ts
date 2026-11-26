@@ -5,7 +5,7 @@ import sourceConfig from "../registry/sources.json" with { type: "json" };
 import { locales } from "../src/i18n.ts";
 import { INDEX_PATH, PAGE_CACHE } from "../src/registry.ts";
 import type { Manifest } from "../src/registry.ts";
-import { get, verifyAsset, verifyCache } from "./http.ts";
+import { get, runConcurrently, verifyAsset, verifyCache } from "./http.ts";
 import { verifyPages } from "./verify-pages.ts";
 import { verifyAgents } from "./verify-agents.ts";
 import { validateSources } from "./config.ts";
@@ -60,21 +60,22 @@ for (const entry of registry.dashboards) {
     assert(expected.assets[iconURL.pathname], `${entry.id}: missing icon route`);
   }
 }
-for (const [path, asset] of Object.entries(expected.assets))
+await runConcurrently(Object.entries(expected.assets), 6, async ([path, asset]) => {
   await verifyAsset(new URL(path, origin), asset, edgeCache);
+});
 await verifyPages(expected, origin, edgeCache, args.includes("--dev"));
 await verifyAgents(expected, origin, edgeCache);
-const post = await get(indexURL, { method: "POST" });
+const [post, conditional, head, missing] = await Promise.all([
+  get(indexURL, { method: "POST" }),
+  get(indexURL, { headers: { "If-None-Match": indexResponse.headers.get("ETag")! } }),
+  get(indexURL, { method: "HEAD" }),
+  get(new URL("/dashboards/not-registered.bar", origin)),
+]);
 assert.equal(post.status, 405, "Unsupported registry methods must return 405");
 assert.equal(post.headers.get("Cache-Control"), "no-store", "Method errors must not be cached");
-const conditional = await get(indexURL, {
-  headers: { "If-None-Match": indexResponse.headers.get("ETag")! },
-});
 assert.equal(conditional.status, 304, "Conditional index request did not return 304");
-const head = await get(indexURL, { method: "HEAD" });
 assert.equal(head.status, 200, "Index HEAD request failed");
 assert.equal((await head.arrayBuffer()).byteLength, 0, "HEAD must not return a body");
-const missing = await get(new URL("/dashboards/not-registered.bar", origin));
 assert.equal(missing.status, 404, "Unknown files must return 404");
 assert.equal(missing.headers.get("Cache-Control"), "no-store", "Unknown files must not be cached");
 if (edgeCache) await verifyCache(indexURL, sha256(indexBytes));

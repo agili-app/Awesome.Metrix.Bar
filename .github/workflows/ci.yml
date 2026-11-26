@@ -28,23 +28,31 @@ jobs:
           cache: true
           run-install: |
             args: ['--frozen-lockfile']
+      - uses: actions/cache@v6
+        with:
+          path: .cache
+          key: registry-cache-${{ hashFiles('registry/sources.json', 'src/authors.ts') }}
+          restore-keys: |
+            registry-cache-
       - name: Verify published dashboard history
         if: github.event_name == 'pull_request' || github.ref_name == github.event.repository.default_branch
         env:
           BASE_REVISION: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: vp run registry:history -- "$BASE_REVISION"
-      - run: vp run verify
+      - name: Verify registry, lint, tests, and build
+        # setup-vp's install already ran package.json#prepare (vp run types).
+        run: vp run registry:build && vp check && vp test && vp build
       - run: vp exec cf deploy --prebuilt --mode production --dry-run
       - name: Verify production HTTP output
         run: |
           vp preview --host 127.0.0.1 --port 4173 --strictPort > /tmp/metrix-preview.log 2>&1 &
           preview_pid=$!
           trap 'kill "$preview_pid"; cat /tmp/metrix-preview.log' EXIT
-          for attempt in {1..30}; do
+          for attempt in {1..150}; do
             if curl --silent --fail http://127.0.0.1:4173/dashboards/index.json > /dev/null; then
               break
             fi
-            sleep 1
+            sleep 0.2
           done
           vp run verify:http -- http://127.0.0.1:4173
       - name: Verify development HTTP output
@@ -52,10 +60,10 @@ jobs:
           vp dev --host 127.0.0.1 --port 5173 --strictPort > /tmp/metrix-worker.log 2>&1 &
           worker_pid=$!
           trap 'kill "$worker_pid"; cat /tmp/metrix-worker.log' EXIT
-          for attempt in {1..30}; do
+          for attempt in {1..150}; do
             if curl --silent --fail http://127.0.0.1:5173/dashboards/index.json > /dev/null; then
               break
             fi
-            sleep 1
+            sleep 0.2
           done
           vp run verify:http -- http://127.0.0.1:5173 --dev

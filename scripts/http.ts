@@ -7,6 +7,19 @@ export function get(url: URL, init?: RequestInit): Promise<Response> {
   return fetch(url, { ...init, redirect: "error", signal: AbortSignal.timeout(30_000) });
 }
 
+export async function runConcurrently<T>(
+  items: readonly T[],
+  concurrency: number,
+  worker: (item: T) => Promise<void>,
+): Promise<void> {
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: Math.min(concurrency, items.length) }, async () => {
+      while (next < items.length) await worker(items[next++]!);
+    }),
+  );
+}
+
 export async function verifyCache(url: URL, hash: string, init?: RequestInit): Promise<void> {
   const response = await get(url, init);
   assert.equal(response.status, 200, `${url.pathname}: cached request failed`);
