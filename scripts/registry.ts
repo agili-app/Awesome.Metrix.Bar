@@ -1,10 +1,25 @@
 import { createHash } from "node:crypto";
 import { basename } from "node:path";
+import type { ValidateFunction } from "ajv";
 import { Ajv2020 } from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
 import { isBarPath } from "./config.ts";
 import type { Release, Source } from "./config.ts";
 import type { Dashboard, Registry } from "../src/registry.ts";
+
+const validators = new Map<string, { ajv: Ajv2020; validate: ValidateFunction<Registry> }>();
+
+function registryValidator(schema: object) {
+  const key = JSON.stringify(schema);
+  let entry = validators.get(key);
+  if (!entry) {
+    const ajv = new Ajv2020({ allErrors: true });
+    addFormats(ajv);
+    entry = { ajv, validate: ajv.compile<Registry>(schema) };
+    validators.set(key, entry);
+  }
+  return entry;
+}
 
 export function sha256(bytes: Uint8Array | string): string {
   return createHash("sha256").update(bytes).digest("hex");
@@ -39,9 +54,7 @@ export function completeEntry(entry: Dashboard, source: Source, release: Release
 }
 
 export function validateRegistry(registry: unknown, schema: object): asserts registry is Registry {
-  const ajv = new Ajv2020({ allErrors: true });
-  addFormats(ajv);
-  const validate = ajv.compile<Registry>(schema);
+  const { ajv, validate } = registryValidator(schema);
   if (!validate(registry)) throw new Error(`Invalid registry: ${ajv.errorsText(validate.errors)}`);
   const ids = new Set<string>();
   for (const entry of registry.dashboards) {

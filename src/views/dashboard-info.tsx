@@ -3,6 +3,7 @@ import type { Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
 import type { Dashboard } from "../registry.ts";
 import { Author } from "./author.tsx";
+import { ExternalArrow } from "./icons.tsx";
 
 export function DashboardInfo({
   dashboard,
@@ -75,12 +76,12 @@ export function DashboardInfo({
         >
           {homepage && (
             <a href={homepage}>
-              {m.project_homepage({}, { locale })} <span aria-hidden="true">↗</span>
+              {m.project_homepage({}, { locale })} <ExternalArrow />
             </a>
           )}
           {dashboard.source && (
             <a href={dashboard.source}>
-              {m.source_code({}, { locale })} <span aria-hidden="true">↗</span>
+              {m.source_code({}, { locale })} <ExternalArrow />
             </a>
           )}
         </div>

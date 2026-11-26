@@ -1,3 +1,4 @@
+import { sha256Hex } from "./crypto.ts";
 import { ASSET_CACHE, INDEX_PATH, PAGE_CACHE } from "./registry.ts";
 import type { Manifest } from "./registry.ts";
 
@@ -45,11 +46,7 @@ export function createHandler(manifest: Manifest, fetchUpstream: typeof fetch = 
       });
       if (upstream.status !== 200) throw new Error(`Upstream returned ${upstream.status}`);
       const bytes = await upstream.arrayBuffer();
-      const digest = await crypto.subtle.digest("SHA-256", bytes);
-      const hash = Array.from(new Uint8Array(digest), (value) =>
-        value.toString(16).padStart(2, "0"),
-      ).join("");
-      if (hash !== asset.sha256) throw new Error("SHA-256 mismatch");
+      if ((await sha256Hex(bytes)) !== asset.sha256) throw new Error("SHA-256 mismatch");
       return new Response(bytes, { headers });
     } catch (error) {
       console.error(`Upstream request failed: ${asset.url}`, error);

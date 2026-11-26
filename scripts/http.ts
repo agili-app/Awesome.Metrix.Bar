@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import pLimit from "p-limit";
 import { ASSET_CACHE } from "../src/registry.ts";
 import type { Asset } from "../src/registry.ts";
 import { sha256 } from "./registry.ts";
@@ -12,12 +13,8 @@ export async function runConcurrently<T>(
   concurrency: number,
   worker: (item: T) => Promise<void>,
 ): Promise<void> {
-  let next = 0;
-  await Promise.all(
-    Array.from({ length: Math.min(concurrency, items.length) }, async () => {
-      while (next < items.length) await worker(items[next++]!);
-    }),
-  );
+  const limit = pLimit(concurrency);
+  await Promise.all(items.map((item) => limit(() => worker(item))));
 }
 
 export async function verifyCache(url: URL, hash: string, init?: RequestInit): Promise<void> {

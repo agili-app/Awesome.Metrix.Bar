@@ -14,7 +14,9 @@ export const authors = [
   url: `https://unavatar.webp.se/github/${name}`,
 }));
 
+const authorsByName = new Map(authors.map((author) => [author.name, author]));
+
 export function avatarPath(name: string): string | undefined {
-  const author = authors.find((author) => author.name === name);
+  const author = authorsByName.get(name);
   return author ? `/avatars/${author.file}` : undefined;
 }

@@ -7,16 +7,11 @@ export function LanguagePicker({ locale, path }: { locale: Locale; path: string 
     <details className={css({ position: "relative" })}>
       <summary
         aria-label={`${m.language_picker({}, { locale })}: ${languageNames[locale]}`}
-        className={css({
-          cursor: "pointer",
-          minHeight: "8",
-          py: "1.5",
-          whiteSpace: "nowrap",
-        })}
+        className={css({ cursor: "pointer", minHeight: "8", py: "1.5", whiteSpace: "nowrap" })}
       >
         <span lang={locale}>{languageNames[locale]}</span>
       </summary>
-      <nav
+      <ul
         aria-label={m.language_picker({}, { locale })}
         className={css({
           position: "absolute",
@@ -28,17 +23,21 @@ export function LanguagePicker({ locale, path }: { locale: Locale; path: string 
           layerStyle: "panel",
           p: "2",
           boxShadow: "offset",
+          listStyle: "none",
+          display: "grid",
+          gap: "1",
         })}
       >
-        <ul className={css({ listStyle: "none", display: "grid", gap: "1" })}>
-          {locales.map((language) => (
+        {locales.map((language) => {
+          const isCurrent = language === locale;
+          return (
             <li key={language}>
               <a
                 href={localePath(path, language)}
-                data-prefetch
+                data-prefetch={isCurrent ? undefined : ""}
                 hrefLang={language}
                 lang={language}
-                aria-current={language === locale ? "page" : undefined}
+                aria-current={isCurrent ? "page" : undefined}
                 className={css({
                   width: "full",
                   px: "3",
@@ -56,9 +55,9 @@ export function LanguagePicker({ locale, path }: { locale: Locale; path: string 
                 {languageNames[language]}
               </a>
             </li>
-          ))}
-        </ul>
-      </nav>
+          );
+        })}
+      </ul>
     </details>
   );
 }

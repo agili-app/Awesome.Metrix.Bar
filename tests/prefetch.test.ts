@@ -18,7 +18,8 @@ describe("navigation prefetch policy", () => {
 
   it("normalizes fragments and duplicate anchors against a three-page budget", () => {
     const send = vi.fn();
-    const prefetch = createPrefetcher(`${origin}/`, send);
+    const onExhausted = vi.fn();
+    const prefetch = createPrefetcher(`${origin}/`, send, onExhausted);
     for (const href of [
       "/dashboards/pulse#setup",
       `${origin}/dashboards/pulse`,
@@ -32,6 +33,7 @@ describe("navigation prefetch policy", () => {
       [`${origin}/dashboards/komari`],
       [`${origin}/zh-CN/dashboards/pulse`],
     ]);
+    expect(onExhausted).toHaveBeenCalledTimes(1);
   });
 
   it("skips the current document, unsafe or non-page targets without using the budget", () => {

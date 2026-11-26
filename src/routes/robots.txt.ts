@@ -1,7 +1,6 @@
 import { defineHandler } from "void/handler";
 import manifest from "../../.generated/manifest.json";
-import { PAGE_CACHE } from "../registry.ts";
-import { siteURL } from "../seo.ts";
+import { PAGE_CACHE, siteURL } from "../registry.ts";
 
 export const GET = defineHandler(
   () =>

@@ -1,12 +1,14 @@
-import { ActionLink } from "./action-link.tsx";
 import { css } from "../../styled-system/css";
+import { grid } from "../../styled-system/patterns";
 import { button } from "../../styled-system/recipes";
 import { dashboardLinks } from "../catalog.ts";
 import { baseLocale, dashboardPath, localePath, type Locale } from "../i18n.ts";
 import * as m from "../paraglide/messages.js";
 import type { Dashboard, Manifest } from "../registry.ts";
+import { ActionLink } from "./action-link.tsx";
 import { DashboardIcon } from "./dashboard-icon.tsx";
 import { DashboardInfo } from "./dashboard-info.tsx";
+import { ExternalArrow } from "./icons.tsx";
 import { Site } from "./site.tsx";
 
 export function DashboardDetail({
@@ -19,6 +21,7 @@ export function DashboardDetail({
   locale?: Locale;
 }) {
   const links = dashboardLinks(dashboard, manifest);
+  const repository = manifest.dashboardRepositories[dashboard.id];
   return (
     <Site manifest={manifest} locale={locale} path={dashboardPath(dashboard.id)}>
       <nav
@@ -60,7 +63,7 @@ export function DashboardDetail({
           })}
         >
           <DashboardIcon dashboard={dashboard} manifest={manifest} loading="eager" />
-          <div className={css({ display: "grid", gap: "4", minWidth: "0" })}>
+          <div className={grid({ gap: "4", minWidth: "0" })}>
             {dashboard.category && (
               <p className={css({ textStyle: "eyebrow", color: "fg.muted" })}>
                 {dashboard.category}
@@ -72,16 +75,13 @@ export function DashboardDetail({
             <p className={css({ fontSize: "lg", color: "fg.muted", whiteSpace: "pre-line" })}>
               {dashboard.description ?? m.fallback_description({}, { locale })}
             </p>
-            {links.repository && (
+            {links.repository && repository && (
               <a
                 className={css({ justifySelf: "start", fontSize: "sm", fontWeight: "semibold" })}
                 href={links.repository}
-                aria-label={m.view_repository(
-                  { repository: manifest.dashboardRepositories[dashboard.id] },
-                  { locale },
-                )}
+                aria-label={m.view_repository({ repository }, { locale })}
               >
-                {m.github_project({}, { locale })} <span aria-hidden="true">↗</span>
+                {m.github_project({}, { locale })} <ExternalArrow />
               </a>
             )}
           </div>

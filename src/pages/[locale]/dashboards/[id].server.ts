@@ -1,16 +1,14 @@
-import { defineHandler, defineHead } from "void/handler";
-import type { InferProps } from "void/handler";
+import { defineHandler, defineHead, type InferProps } from "void/handler";
 import type { PageParams } from "void/routes";
 import manifest from "../../../../.generated/manifest.json";
-import { baseLocale, isLocale, prefixedLocales } from "../../../i18n.ts";
+import { parsePrefixedLocale, prefixedLocales } from "../../../i18n.ts";
 import { dashboardHead } from "../../../seo.ts";
 
 export const loader = defineHandler((context) => {
-  const locale = context.req.param("locale");
-  if (!isLocale(locale) || locale === baseLocale) return context.notFound();
+  const locale = parsePrefixedLocale(context.req.param("locale"));
+  if (!locale) return context.notFound();
   const dashboard = manifest.registry.dashboards.find(({ id }) => id === context.req.param("id"));
-  if (!dashboard) return context.notFound();
-  return { dashboard, locale };
+  return dashboard ? { dashboard, locale } : context.notFound();
 });
 
 export type Props = Exclude<InferProps<typeof loader>, Response>;
