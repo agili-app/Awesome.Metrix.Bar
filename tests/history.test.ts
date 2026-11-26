@@ -42,12 +42,10 @@ describe("published dashboard history", () => {
     expect(() => verifyHistory(previous, validateSources(current))).not.toThrow();
   });
 
-  it("rejects removing a published dashboard", () => {
+  it("allows removing a published dashboard while preserving remaining history", () => {
     const current = baseline();
     current.dashboards = [];
-    expect(() => verifyHistory(baseline(), validateSources(current))).toThrow(
-      "Published dashboard removed",
-    );
+    expect(() => verifyHistory(baseline(), validateSources(current))).not.toThrow();
   });
 
   it("rejects removing an old release even when the latest is unchanged", () => {

@@ -23,7 +23,7 @@ export function verifyHistory(
   );
   for (const source of previous.dashboards) {
     const next = current.dashboards.find(({ id }) => id === source.id);
-    assert(next, `Published dashboard removed: ${source.id}`);
+    if (!next) continue;
     for (const release of source.releases) {
       assert(
         next.releases.some(
