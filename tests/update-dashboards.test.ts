@@ -46,6 +46,7 @@ function fixture(ids = ["komari", "tokens"]) {
   });
   vi.stubGlobal("fetch", fetch);
   vi.spyOn(console, "log").mockImplementation(() => {});
+  vi.spyOn(console, "warn").mockImplementation(() => {});
   vi.spyOn(console, "error").mockImplementation(() => {});
   return { config, files, fetch, iconBytes, responses };
 }
@@ -200,4 +201,44 @@ it("pins and caches a remote icon from one successful request", async () => {
   expect(
     fetch.mock.calls.filter(([url]) => (url instanceof URL ? url.href === icon : url === icon)),
   ).toHaveLength(1);
+});
+
+it("skips a missing upstream .bar file (404) without failing the run", async () => {
+  const { config, responses } = fixture();
+  responses.set(
+    sourceURL(config.dashboards[0]!, { commit }),
+    new Response("Not Found", { status: 404 }),
+  );
+  const result = await updateDashboards(config);
+  expect(result.failed).toBe(false);
+  expect(result.changed).toBe(true);
+  expect(result.config.dashboards[0]).toEqual(config.dashboards[0]);
+  expect(result.config.dashboards[1]!.releases).toHaveLength(
+    config.dashboards[1]!.releases.length + 1,
+  );
+});
+
+it("skips a missing upstream repository (404) without failing the run", async () => {
+  const { config, responses } = fixture(["komari", "tokens", "pulse"]);
+  responses.set(
+    `https://api.github.com/repos/${config.dashboards[0]!.repository}/commits/HEAD`,
+    new Response("Not Found", { status: 404 }),
+  );
+  const result = await updateDashboards(config);
+  expect(result.failed).toBe(false);
+  expect(result.changed).toBe(true);
+  expect(result.config.dashboards.slice(0, 2)).toEqual(config.dashboards.slice(0, 2));
+  expect(result.config.dashboards[2]!.releases).toHaveLength(
+    config.dashboards[2]!.releases.length + 1,
+  );
+});
+
+it("still fails when a new release references a missing remote icon (404)", async () => {
+  const { config, files, responses } = fixture(["komari"]);
+  files.set("komari", bar("komari", "9.0.0", `icon="${icon}"`));
+  responses.set(icon, new Response("Not Found", { status: 404 }));
+  const result = await updateDashboards(config);
+  expect(result.failed).toBe(true);
+  expect(result.changed).toBe(false);
+  expect(result.config).toEqual(config);
 });
