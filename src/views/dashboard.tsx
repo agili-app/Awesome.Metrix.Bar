@@ -94,7 +94,7 @@ export function DashboardCard({
       <p className={css({ color: "fg.muted", fontSize: "sm", whiteSpace: "pre-line" })}>
         {dashboard.description ?? m.fallback_description({}, { locale })}
       </p>
-      <DashboardPreviewCover dashboard={dashboard} manifest={manifest} href={detailHref} />
+      <DashboardPreviewCover dashboard={dashboard} manifest={manifest} locale={locale} />
       {dashboard.category && (
         <small
           className={css({

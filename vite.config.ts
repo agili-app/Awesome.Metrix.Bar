@@ -24,7 +24,12 @@ export default defineConfig({
     void_worker: {
       build: { sourcemap: true },
       optimizeDeps: {
-        include: ["@ui-sdk/react/button", "@ui-sdk/react/field", "@ui-sdk/react/input"],
+        include: [
+          "@ui-sdk/react/button",
+          "@ui-sdk/react/dialog",
+          "@ui-sdk/react/field",
+          "@ui-sdk/react/input",
+        ],
       },
     },
   },

@@ -1,13 +1,13 @@
-import { readdir, readFile, rm } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { INDEX_PATH } from "../src/registry.ts";
-import type { Asset, Dashboard, DashboardPreview, Manifest, Registry } from "../src/registry.ts";
+import type { Asset, Dashboard, Manifest, Registry } from "../src/registry.ts";
 import { completeEntry, sha256, sourceURL, validateRegistry } from "./registry.ts";
 import { validateSources } from "./config.ts";
 import { download } from "./download.ts";
-import { inspectPreviewImage, PREVIEW_EXTENSIONS } from "./image.ts";
 import { parseBar } from "./parse-bar.ts";
 import { writeAtomic } from "./files.ts";
+import { buildPreviews } from "./build-previews.ts";
 import { buildStars } from "./build-stars.ts";
 
 const root = resolve(import.meta.dirname, "..");
@@ -26,8 +26,6 @@ export async function buildRegistry(
   ]);
   const parsedSchema = JSON.parse(schema.bytes.toString()) as object;
   const resources: Record<string, Asset> = {};
-  const previewFiles = new Map<string, Buffer>();
-  const dashboardPreviews: Record<string, DashboardPreview[]> = {};
   const dashboards = await Promise.all(
     config.dashboards.map(async (source) => {
       let latest: Dashboard | undefined;
@@ -61,24 +59,6 @@ export async function buildRegistry(
         }
         latest = entry;
       }
-      if (source.previews?.length) {
-        dashboardPreviews[source.id] = await Promise.all(
-          source.previews.map(async (preview) => {
-            const extension = PREVIEW_EXTENSIONS[preview.contentType];
-            const { bytes } = await download(preview, extension);
-            const { width, height } = inspectPreviewImage(bytes, preview.contentType);
-            const filename = `${preview.sha256}.${extension}`;
-            previewFiles.set(filename, bytes);
-            return {
-              path: `/previews/${filename}`,
-              width,
-              height,
-              contentType: preview.contentType,
-              ...(preview.alt ? { alt: preview.alt } : {}),
-            };
-          }),
-        );
-      }
       return latest!;
     }),
   );
@@ -90,17 +70,10 @@ export async function buildRegistry(
     dashboards,
   };
   validateRegistry(registry, parsedSchema);
-  await Promise.all(
-    [...previewFiles.entries()].map(([filename, bytes]) =>
-      writeAtomic(join(previewsDir, filename), bytes),
-    ),
-  );
-  const existingPreviews = await readdir(previewsDir).catch(() => []);
-  await Promise.all(
-    existingPreviews
-      .filter((filename) => !previewFiles.has(filename))
-      .map((filename) => rm(join(previewsDir, filename), { force: true })),
-  );
+  const [dashboardPreviews, projectStars] = await Promise.all([
+    buildPreviews(config.dashboards, previewsDir),
+    buildStars(config.dashboards.map(({ repository }) => repository)),
+  ]);
   const index = `${JSON.stringify(registry, null, 2)}\n`;
   const manifest: Manifest = {
     registryURL: new URL(INDEX_PATH, config.registry.origin).href,
@@ -110,12 +83,8 @@ export async function buildRegistry(
     dashboardRepositories: Object.fromEntries(
       config.dashboards.map(({ id, repository }) => [id, repository]),
     ),
-    dashboardPreviews: Object.fromEntries(
-      config.dashboards
-        .filter(({ id }) => dashboardPreviews[id]?.length)
-        .map(({ id }) => [id, dashboardPreviews[id]!]),
-    ),
-    projectStars: await buildStars(config.dashboards.map(({ repository }) => repository)),
+    dashboardPreviews,
+    projectStars,
   };
   await writeAtomic(join(generated, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
   return manifest;

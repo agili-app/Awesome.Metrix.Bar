@@ -1,6 +1,5 @@
 import { compare, parse } from "semver";
 import { z } from "zod";
-import { PREVIEW_IMAGE_TYPES } from "./image.ts";
 
 export const MAX_PREVIEWS = 3;
 
@@ -23,10 +22,14 @@ const digest = z
   .refine((value) => value === value.toLowerCase(), "SHA-256 must be lowercase");
 const pin = z.strictObject({ url: httpsURL, sha256: digest });
 const tool = pin.omit({ sha256: true });
-const preview = pin.extend({
-  contentType: z.enum(PREVIEW_IMAGE_TYPES),
+const previewObject = z.strictObject({
+  url: httpsURL,
   alt: z.string().trim().min(1).max(140).optional(),
 });
+const preview = z.union([
+  httpsURL.transform((url): { url: string; alt?: string } => ({ url })),
+  previewObject,
+]);
 const release = z.strictObject({
   commit: z.string().regex(/^[a-f0-9]{40}$/, "Release must pin a full commit"),
   version: z.string().refine(
@@ -52,11 +55,9 @@ const source = z.strictObject({
   license: z.string().min(1),
   previews: z
     .array(preview)
-    .min(1)
     .max(MAX_PREVIEWS)
     .superRefine((items, ctx) => {
       const urls = new Set<string>();
-      const hashes = new Set<string>();
       for (const [index, item] of items.entries()) {
         if (urls.has(item.url)) {
           ctx.addIssue({
@@ -65,15 +66,7 @@ const source = z.strictObject({
             message: "Duplicate preview URL",
           });
         }
-        if (hashes.has(item.sha256)) {
-          ctx.addIssue({
-            code: "custom",
-            path: [index, "sha256"],
-            message: "Duplicate preview image",
-          });
-        }
         urls.add(item.url);
-        hashes.add(item.sha256);
       }
     })
     .optional(),

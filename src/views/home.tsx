@@ -10,6 +10,7 @@ import * as m from "../paraglide/messages.js";
 import type { Manifest } from "../registry.ts";
 import { ActionLink } from "./action-link.tsx";
 import { DashboardCard } from "./dashboard.tsx";
+import { previewLabelsAttribute } from "./dashboard-previews.tsx";
 import { Site } from "./site.tsx";
 
 export function Home({ manifest, locale = baseLocale }: { manifest: Manifest; locale?: Locale }) {
@@ -94,7 +95,7 @@ export function Home({ manifest, locale = baseLocale }: { manifest: Manifest; lo
           </small>
         </article>
       </section>
-      <section aria-labelledby="dashboards">
+      <section aria-labelledby="dashboards" data-preview-labels={previewLabelsAttribute(locale)}>
         <header
           className={flex({
             justify: "space-between",

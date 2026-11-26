@@ -1,17 +1,22 @@
 import { mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { describe, expect, it, vi } from "vite-plus/test";
-import sources from "../registry/sources.json";
-import { buildRegistry } from "../scripts/build-registry.ts";
-import { inspectPreviewImage } from "../scripts/image.ts";
-import { sha256 } from "../scripts/registry.ts";
-import type { Source } from "../scripts/config.ts";
+import { afterEach, describe, expect, it, vi } from "vite-plus/test";
+import { buildPreviews } from "../scripts/build-previews.ts";
+import { detectPreviewImage } from "../scripts/image.ts";
 
-vi.mock("../scripts/build-stars.ts", () => ({
-  buildStars: async (repositories: string[]) =>
-    Object.fromEntries(repositories.map((repository) => [repository, 42])),
-}));
+const directories: string[] = [];
+async function temporary() {
+  const root = await mkdtemp(join(tmpdir(), "metrix-previews-"));
+  directories.push(root);
+  return { cache: join(root, "cache"), output: join(root, "output") };
+}
+afterEach(async () => {
+  await Promise.all(
+    directories.splice(0).map((path) => rm(path, { recursive: true, force: true })),
+  );
+  vi.restoreAllMocks();
+});
 
 function makePng(width: number, height: number): Buffer {
   const buf = Buffer.alloc(24);
@@ -102,93 +107,114 @@ function makeAvif(width: number, height: number): Buffer {
   return Buffer.concat([ftyp, meta]);
 }
 
-describe("preview image inspection", () => {
-  it("extracts dimensions from PNG, JPEG, WebP, GIF, and AVIF headers", () => {
-    expect(inspectPreviewImage(makePng(640, 960), "image/png")).toEqual({
+describe("preview image detection", () => {
+  it("detects format and dimensions from PNG, JPEG, WebP, GIF, and AVIF headers", () => {
+    expect(detectPreviewImage(makePng(640, 960))).toEqual({
+      contentType: "image/png",
+      extension: "png",
       width: 640,
       height: 960,
     });
-    expect(inspectPreviewImage(makeJpeg(1200, 800), "image/jpeg")).toEqual({
+    expect(detectPreviewImage(makeJpeg(1200, 800))).toEqual({
+      contentType: "image/jpeg",
+      extension: "jpg",
       width: 1200,
       height: 800,
     });
-    expect(inspectPreviewImage(makeWebpVP8X(760, 1444), "image/webp")).toEqual({
+    expect(detectPreviewImage(makeWebpVP8X(760, 1444))).toEqual({
+      contentType: "image/webp",
+      extension: "webp",
       width: 760,
       height: 1444,
     });
-    expect(inspectPreviewImage(makeWebpVP8L(920, 1080), "image/webp")).toEqual({
+    expect(detectPreviewImage(makeWebpVP8L(920, 1080))).toEqual({
+      contentType: "image/webp",
+      extension: "webp",
       width: 920,
       height: 1080,
     });
-    expect(inspectPreviewImage(makeGif(400, 300), "image/gif")).toEqual({
+    expect(detectPreviewImage(makeGif(400, 300))).toEqual({
+      contentType: "image/gif",
+      extension: "gif",
       width: 400,
       height: 300,
     });
-    expect(inspectPreviewImage(makeAvif(800, 512), "image/avif")).toEqual({
+    expect(detectPreviewImage(makeAvif(800, 512))).toEqual({
+      contentType: "image/avif",
+      extension: "avif",
       width: 800,
       height: 512,
     });
   });
 
-  it("rejects mismatched content types, HTML error pages, and zero-dimension headers", () => {
-    expect(() => inspectPreviewImage(makePng(100, 100), "image/webp")).toThrow("mismatched");
-    expect(() => inspectPreviewImage(Buffer.from("<html>404</html>"), "image/png")).toThrow(
-      "mismatched",
-    );
-    expect(() => inspectPreviewImage(makePng(0, 100), "image/png")).toThrow("mismatched");
+  it("rejects HTML error pages, SVGs, and zero-dimension headers", () => {
+    expect(() => detectPreviewImage(Buffer.from("<html>404</html>"))).toThrow();
+    expect(() => detectPreviewImage(Buffer.from("<svg/>"))).toThrow();
+    expect(() => detectPreviewImage(makePng(0, 100))).toThrow();
   });
 });
 
-describe("preview publishing", () => {
-  it("copies hash-pinned previews, records dimensions, and removes stale preview files", async () => {
-    const output = await mkdtemp(join(tmpdir(), "metrix-previews-"));
-    const previewsDir = join(output, "previews");
-    const raw = Buffer.from(
-      '<bar protocol-version="0" id="preview-demo" title="Preview Demo" version="1.0.0"><script>export default {};</script></bar>',
-    );
-    const barHash = sha256(raw);
+describe("optional preview publishing", () => {
+  it("caches previews, keeps expired caches on refresh error, skips missing previews, and removes stale files", async () => {
+    const { cache, output } = await temporary();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     const png = makePng(720, 1024);
-    const pngHash = sha256(png);
-    await writeFile(`.cache/downloads/${barHash}.bar`, raw);
-    await writeFile(`.cache/downloads/${pngHash}.png`, png);
-    const item: Source = {
-      id: "preview-demo",
-      repository: "author/preview-demo",
-      path: "preview-demo.bar",
-      author: "author",
-      license: "MIT",
-      previews: [
+    const upstream = vi.fn<typeof fetch>(async (input) => {
+      const href =
+        typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+      if (href.includes("missing")) return new Response("not found", { status: 404 });
+      return new Response(new Uint8Array(png));
+    });
+    const list = [
+      {
+        id: "demo",
+        previews: [
+          { url: "https://example.com/a.png", alt: "Overview" },
+          { url: "https://example.com/missing.png", alt: "Missing" },
+        ],
+      },
+      { id: "plain" },
+    ];
+
+    const first = await buildPreviews(list, output, cache, upstream);
+    expect(first).toEqual({
+      demo: [
         {
-          url: "https://example.com/preview.png",
-          sha256: pngHash,
-          contentType: "image/png",
-          alt: "Main overview panel",
-        },
-      ],
-      releases: [{ commit: "a".repeat(40), version: "1.0.0", sha256: barHash }],
-    };
-    try {
-      const manifest = await buildRegistry({ ...sources, dashboards: [item] }, output, previewsDir);
-      expect(manifest.registry.dashboards[0]).not.toHaveProperty("previews");
-      expect(manifest.dashboardPreviews["preview-demo"]).toEqual([
-        {
-          path: `/previews/${pngHash}.png`,
+          path: "/previews/demo-1.png",
           width: 720,
           height: 1024,
           contentType: "image/png",
-          alt: "Main overview panel",
+          alt: "Overview",
         },
-      ]);
-      expect(await readFile(join(previewsDir, `${pngHash}.png`))).toEqual(png);
-      await writeFile(join(previewsDir, "stale.png"), "old");
-      await buildRegistry(
-        { ...sources, dashboards: [{ ...item, previews: undefined }] },
-        output,
-        previewsDir,
-      );
-      expect(await readdir(previewsDir)).toEqual([]);
-    } finally {
-      await rm(output, { recursive: true, force: true });
-    }
+      ],
+    });
+    expect(await readFile(join(output, "demo-1.png"))).toEqual(png);
+    expect(warn).toHaveBeenCalledTimes(1);
+
+    // Within TTL, valid cached previews are reused without hitting upstream again.
+    await buildPreviews(
+      [{ id: "demo", previews: [list[0]!.previews![0]!] }],
+      output,
+      cache,
+      upstream,
+    );
+    expect(upstream).toHaveBeenCalledTimes(2);
+
+    // After TTL expires, refresh failures fall back to cached bytes instead of failing the build.
+    upstream.mockRejectedValue(new Error("offline"));
+    const fallback = await buildPreviews(
+      [{ id: "demo", previews: [list[0]!.previews![0]!] }],
+      output,
+      cache,
+      upstream,
+      Date.now() + 86_401_000,
+    );
+    expect(fallback.demo).toHaveLength(1);
+
+    // Removing previews cleans stale output files.
+    await writeFile(join(output, "stale.png"), "old");
+    const empty = await buildPreviews([{ id: "demo" }], output, cache, upstream);
+    expect(empty).toEqual({});
+    expect(await readdir(output)).toEqual([]);
   });
 });

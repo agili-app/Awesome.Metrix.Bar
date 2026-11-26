@@ -89,19 +89,25 @@ describe("source configuration", () => {
     },
   );
 
-  it("allows up to three unique raster previews and rejects invalid preview lists", () => {
+  it("allows up to three optional preview URLs and rejects duplicates or excess entries", () => {
     const makePreview = (index: number) => ({
       url: `https://example.com/preview-${index}.webp`,
-      sha256: String(index).repeat(64),
-      contentType: "image/webp" as const,
       alt: `Preview ${index}`,
     });
+    expect(
+      validateSources(withReleases({ ...source(), previews: [] })).dashboards[0]!.previews,
+    ).toEqual([]);
+    expect(
+      validateSources({
+        ...sources,
+        dashboards: [{ ...source(), previews: ["https://example.com/plain.png", makePreview(2)] }],
+      }).dashboards[0]!.previews,
+    ).toEqual([{ url: "https://example.com/plain.png" }, makePreview(2)]);
     expect(() =>
       validateSources(
         withReleases({ ...source(), previews: [makePreview(1), makePreview(2), makePreview(3)] }),
       ),
     ).not.toThrow();
-    expect(() => validateSources(withReleases({ ...source(), previews: [] }))).toThrow();
     expect(() =>
       validateSources(
         withReleases({
@@ -114,27 +120,14 @@ describe("source configuration", () => {
       validateSources(
         withReleases({
           ...source(),
-          previews: [makePreview(1), { ...makePreview(2), url: makePreview(1).url }],
+          previews: [makePreview(1), { url: makePreview(1).url, alt: "Duplicate" }],
         }),
       ),
     ).toThrow("Duplicate preview URL");
     expect(() =>
-      validateSources(
-        withReleases({
-          ...source(),
-          previews: [makePreview(1), { ...makePreview(2), sha256: makePreview(1).sha256 }],
-        }),
-      ),
-    ).toThrow("Duplicate preview image");
-    expect(() =>
       validateSources({
         ...sources,
-        dashboards: [
-          {
-            ...source(),
-            previews: [{ ...makePreview(1), contentType: "image/svg+xml" }],
-          },
-        ],
+        dashboards: [{ ...source(), previews: ["http://insecure.example/a.png"] }],
       }),
     ).toThrow();
   });

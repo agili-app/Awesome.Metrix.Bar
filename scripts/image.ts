@@ -21,6 +21,11 @@ export interface ImageDimensions {
   height: number;
 }
 
+export interface DetectedPreviewImage extends ImageDimensions {
+  contentType: PreviewContentType;
+  extension: string;
+}
+
 function pngDimensions(bytes: Buffer): ImageDimensions | undefined {
   if (bytes.length < 24) return;
   if (
@@ -136,21 +141,20 @@ function avifDimensions(bytes: Buffer): ImageDimensions | undefined {
   return findAvifIspe(bytes, ftypEnd, bytes.length);
 }
 
-const parsers: Record<PreviewContentType, (bytes: Buffer) => ImageDimensions | undefined> = {
-  "image/png": pngDimensions,
-  "image/jpeg": jpegDimensions,
-  "image/webp": webpDimensions,
-  "image/gif": gifDimensions,
-  "image/avif": avifDimensions,
-};
+const detectors: [PreviewContentType, (bytes: Buffer) => ImageDimensions | undefined][] = [
+  ["image/png", pngDimensions],
+  ["image/webp", webpDimensions],
+  ["image/jpeg", jpegDimensions],
+  ["image/gif", gifDimensions],
+  ["image/avif", avifDimensions],
+];
 
-export function inspectPreviewImage(
-  bytes: Buffer,
-  contentType: PreviewContentType,
-): ImageDimensions {
-  const dimensions = parsers[contentType](bytes);
-  if (!dimensions || dimensions.width < 1 || dimensions.height < 1) {
-    throw new Error(`Invalid or mismatched ${contentType} preview image`);
+export function detectPreviewImage(bytes: Buffer): DetectedPreviewImage {
+  for (const [contentType, parse] of detectors) {
+    const dimensions = parse(bytes);
+    if (dimensions && dimensions.width > 0 && dimensions.height > 0) {
+      return { contentType, extension: PREVIEW_EXTENSIONS[contentType], ...dimensions };
+    }
   }
-  return dimensions;
+  throw new Error("Unsupported or invalid preview image");
 }
