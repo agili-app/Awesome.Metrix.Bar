@@ -245,6 +245,11 @@
           "commit": "b6187119fe614400a34da804b4b972e952f18989",
           "version": "1.2.0",
           "sha256": "1dc7863e7aa9091ad23f2ffc218b0bc449ac833092b11d47c986d1ea99ab9aac"
+        },
+        {
+          "commit": "02f31db6e11f7707087899abbcb83b819667dd74",
+          "version": "1.3.0",
+          "sha256": "a15b016af44e7bdc3c80179fcbaae4a8e8cb51237c4d4f3ea65a1134e55090ec"
         }
       ]
     },
@@ -337,6 +342,11 @@
           "commit": "f73cf1d36400c82722a4bc1ac31f2c5ee4479e09",
           "version": "0.2.0",
           "sha256": "7a1cee893082e708a148a3ae228c2213d32669f1272c40a361fa1f5de6faebee"
+        },
+        {
+          "commit": "fc4bbc8d01437465e2378ae65b7650bae1598910",
+          "version": "0.2.1",
+          "sha256": "439a09d52a5f05681769e2c6718e5a5da8649523ccc59151d9ec21422a1b08c2"
         }
       ]
     },
