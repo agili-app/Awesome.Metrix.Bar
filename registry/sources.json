@@ -439,7 +439,6 @@
         {"url": "https://raw.githubusercontent.com/qazxue1051289/precious-metals-bar/80520a5e7e32d3f0cff2cdb7d7ab5b4c9f01260d/previews/preview-3.png", "alt": "Precious metals dashboard on desktop"}
       ],
       "releases": [
-        
         {
           "commit": "896506dfbeaf2cd6a8d1606e54187e6a02930282",
           "version": "1.0.4",
